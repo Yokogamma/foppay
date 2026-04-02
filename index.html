@@ -326,7 +326,28 @@
     </div>
     <div class="desktop-right">
       <div class="desktop-section-title">Реквізити для оплати</div>
-      <div id="desktopDetails"></div>
+      <div>
+        <div class="desktop-detail-row">
+          <div><div class="d-label">Отримувач</div><div class="d-value">ФОП Сорохан Мар'яна Юріївна</div></div>
+          <button class="desktop-copy-btn" onclick="dCopy(this,'ФОП Сорохан Мар\u0027яна Юріївна')" title="Скопіювати">📋</button>
+        </div>
+        <div class="desktop-detail-row">
+          <div><div class="d-label">IBAN</div><div class="d-value mono">UA74 3052 9900 0002 6005 0468 02851</div></div>
+          <button class="desktop-copy-btn" onclick="dCopy(this,'UA743052990000026005046802851')" title="Скопіювати">📋</button>
+        </div>
+        <div class="desktop-detail-row">
+          <div><div class="d-label">ЄДРПОУ</div><div class="d-value mono">3162725560</div></div>
+          <button class="desktop-copy-btn" onclick="dCopy(this,'3162725560')" title="Скопіювати">📋</button>
+        </div>
+        <div class="desktop-detail-row">
+          <div><div class="d-label">Сума</div><div class="d-value">456 грн</div></div>
+          <button class="desktop-copy-btn" onclick="dCopy(this,'456')" title="Скопіювати">📋</button>
+        </div>
+        <div class="desktop-detail-row">
+          <div><div class="d-label">Призначення</div><div class="d-value">Оплата замовлення №45678</div></div>
+          <button class="desktop-copy-btn" onclick="dCopy(this,'Оплата замовлення №45678')" title="Скопіювати">📋</button>
+        </div>
+      </div>
       <button class="desktop-copy-all" onclick="copyAll()">📋 Скопіювати всі реквізити</button>
     </div>
   </div>
@@ -390,7 +411,6 @@ document.addEventListener('DOMContentLoaded', function() {
   setupBanks();
   setupTabs();
   setupQR();
-  setupDesktopDetails();
 });
 
 function setupBanks() {
@@ -452,24 +472,11 @@ function setupQR() {
   }
 }
 
-function setupDesktopDetails() {
-  var details = [
-    { label:'Отримувач', value: RECIPIENT, mono: false },
-    { label:'IBAN', value: IBAN, mono: true },
-    { label:'ЄДРПОУ', value: EDRPOU, mono: true },
-    { label:'Сума', value: AMOUNT, mono: false },
-    { label:'Призначення', value: PURPOSE, mono: false }
-  ];
-  var container = document.getElementById('desktopDetails');
-  if (!container) return;
-  container.innerHTML = details.map(function(d) {
-    var rawValue = d.value.replace(/ грн$/, '');
-    return '<div class="desktop-detail-row">' +
-      '<div><div class="d-label">' + d.label + '</div>' +
-      '<div class="d-value' + (d.mono ? ' mono' : '') + '">' + d.value + '</div></div>' +
-      '<button class="desktop-copy-btn" onclick="copyField(this,\'' + rawValue.replace(/'/g, "\\'") + '\')" title="Скопіювати">📋</button>' +
-      '</div>';
-  }).join('');
+function dCopy(btn, text) {
+  copyText(text, 'Скопійовано');
+  btn.classList.add('copied');
+  btn.textContent = '✅';
+  setTimeout(function() { btn.classList.remove('copied'); btn.textContent = '📋'; }, 1500);
 }
 
 // ═══ Accordion ═══
@@ -505,13 +512,6 @@ function copyText(text, msg) {
     document.body.appendChild(ta); ta.select(); document.execCommand('copy');
     document.body.removeChild(ta); showToast(msg);
   }
-}
-
-function copyField(btn, text) {
-  copyText(text, 'Скопійовано');
-  btn.classList.add('copied');
-  btn.textContent = '✅';
-  setTimeout(function() { btn.classList.remove('copied'); btn.textContent = '📋'; }, 1500);
 }
 
 function copyAll() {
