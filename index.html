@@ -4,6 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Оплата замовлення №45678</title>
+
+<!-- Open Graph — превью в Telegram, Viber, WhatsApp -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Рахунок на оплату — 456 грн">
+<meta property="og:description" content="ФОП Сорохан Мар'яна Юріївна · Замовлення №45678 · Оплата на IBAN без комісії">
+<meta property="og:image" content="https://yokogamma.github.io/foppay/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://yokogamma.github.io/foppay/">
+<meta property="og:locale" content="uk_UA">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Рахунок на оплату — 456 грн">
+<meta name="twitter:description" content="ФОП Сорохан Мар'яна Юріївна · Замовлення №45678">
+<meta name="twitter:image" content="https://yokogamma.github.io/foppay/og-image.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap');
@@ -141,10 +157,25 @@
     .desktop-body { display:flex; gap:0; background:#fff; border-radius:0 0 20px 20px; box-shadow:0 1px 3px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06); overflow:hidden; }
     .desktop-left { flex:0 0 42%; padding:28px 32px; border-right:1px solid var(--border); text-align:center; }
     .desktop-right { flex:1; padding:28px 32px; min-width:0; }
-    .desktop-left .qr-wrap { padding:16px; }
-    .desktop-left #qrcode-desktop canvas { width:220px !important; height:220px !important; }
-    .desktop-qr-hint { font-size:13px; color:var(--muted); margin-top:14px; line-height:1.5; }
-    .desktop-privat { margin-top:20px; }
+    .desktop-left .qr-wrap { padding:14px; }
+    /* Two QR layout */
+    .dqr-block { margin-bottom:4px; }
+    .dqr-label { font-size:13px; font-weight:600; color:var(--text); margin-bottom:10px; }
+    .dqr-hint { font-size:12px; color:var(--muted); margin-top:8px; line-height:1.4; }
+    .dqr-divider { text-align:center; margin:14px 0; position:relative; }
+    .dqr-divider::before { content:''; position:absolute; left:20%; right:20%; top:50%; height:1px; background:#e0e0e0; }
+    .dqr-divider span { position:relative; background:#fff; padding:0 12px; font-size:12px; color:var(--muted); font-weight:500; }
+    .qr-wrap--small { padding:10px; }
+    .qr-wrap--small canvas { width:150px !important; height:150px !important; }
+    #qrcode-page canvas { width:200px !important; height:200px !important; }
+    .dqr-banks-strip { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:10px; max-width:280px; margin-left:auto; margin-right:auto; }
+    .dqr-bank-tag { display:flex; align-items:center; gap:5px; padding:5px 8px; border-radius:8px; font-size:11px; font-weight:600; color:#555; background:var(--card-bg); border:1px solid var(--card-border); justify-content:center; }
+    .dqr-bank-tag i { width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-style:normal; font-size:11px; font-weight:700; color:#fff; flex-shrink:0; }
+    .dqr-bank-tag.privat i { background:#5cb85c; }
+    .dqr-bank-tag.mono i { background:#1a1a1a; }
+    .dqr-bank-tag.oschad i { background:#006837; }
+    .dqr-bank-tag.raiff i { background:#ffd300; color:#1a1a1a; }
+    .desktop-privat { margin-top:16px; }
     .desktop-privat a { display:flex; align-items:center; justify-content:center; gap:10px; padding:14px 20px; background:#5cb85c; color:#fff; border-radius:12px; text-decoration:none; font-size:15px; font-weight:600; font-family:inherit; transition:all .15s; }
     .desktop-privat a:hover { background:#4cae4c; }
     .desktop-privat a .icon { width:24px; height:24px; border-radius:6px; background:rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; }
@@ -314,14 +345,26 @@
   </div>
   <div class="desktop-body">
     <div class="desktop-left">
-      <div class="qr-wrap"><div id="qrcode-desktop"></div></div>
-      <div class="desktop-qr-hint">Відскануйте QR-код камерою телефону<br>або з додатку вашого банку</div>
-      <div class="desktop-privat">
-        <a href="https://next.privat24.ua" target="_blank">
-          <span class="icon">P</span>
-          Відкрити Приват24
-        </a>
-        <div class="desktop-privat__hint">Увійдіть та вставте скопійовані реквізити</div>
+      <!-- QR 1: Our page (camera scan) -->
+      <div class="dqr-block">
+        <div class="dqr-label">📱 Скануйте камерою телефону</div>
+        <div class="qr-wrap"><div id="qrcode-page"></div></div>
+        <div class="dqr-hint">Відкриється сторінка з вибором банку</div>
+      </div>
+
+      <div class="dqr-divider"><span>або</span></div>
+
+      <!-- QR 2: NBU deeplink (bank app scan) -->
+      <div class="dqr-block">
+        <div class="dqr-label">🏦 Скануйте з додатку банку</div>
+        <div class="dqr-banks-strip">
+          <span class="dqr-bank-tag privat"><i>P</i>ПриватБанк</span>
+          <span class="dqr-bank-tag mono"><i>m</i>monobank</span>
+          <span class="dqr-bank-tag oschad"><i>О</i>Ощадбанк</span>
+          <span class="dqr-bank-tag raiff"><i>R</i>Raiffeisen</span>
+        </div>
+        <div class="qr-wrap qr-wrap--small"><div id="qrcode-nbu"></div></div>
+        <div class="dqr-hint">Реквізити заповняться автоматично</div>
       </div>
     </div>
     <div class="desktop-right">
@@ -349,6 +392,13 @@
         </div>
       </div>
       <button class="desktop-copy-all" onclick="copyAll()">📋 Скопіювати всі реквізити</button>
+      <div class="desktop-privat">
+        <a href="https://next.privat24.ua" target="_blank">
+          <span class="icon">P</span>
+          Відкрити Приват24
+        </a>
+        <div class="desktop-privat__hint">Увійдіть та вставте скопійовані реквізити</div>
+      </div>
     </div>
   </div>
   <div class="footer" style="margin-top:16px">Оплата за стандартом QR НБУ · Без комісії для отримувача</div>
@@ -377,6 +427,7 @@
 <script>
 // ═══ Payment Data ═══
 var DEEPLINK = "https://bank.gov.ua/qr/QkNECjAwMgoyClVDVAoK1M7PINHu8O714O0gzODwJ__t4CDe8LO_4u3gClVBNzQzMDUyOTkwMDAwMDI2MDA1MDQ2ODAyODUxClVBSDQ1Ni4wMAozMTYyNzI1NTYwCgoKzu_r4PLgIOfg7O7i6-Xt7f8guTQ1Njc4Cg";
+var PAGE_URL = "https://yokogamma.github.io/foppay/";
 var IBAN = "UA743052990000026005046802851";
 var EDRPOU = "3162725560";
 var RECIPIENT = "ФОП Сорохан Мар'яна Юріївна";
@@ -454,7 +505,7 @@ function setupTabs() {
 }
 
 function setupQR() {
-  // Mobile QR
+  // Mobile QR (deeplink НБУ — for scanning from bank app)
   if (document.getElementById('qrcode')) {
     new QRCode(document.getElementById('qrcode'), {
       text: DEEPLINK, width: 180, height: 180,
@@ -462,10 +513,18 @@ function setupQR() {
       correctLevel: QRCode.CorrectLevel.M
     });
   }
-  // Desktop QR
-  if (document.getElementById('qrcode-desktop') && window.innerWidth >= 768) {
-    new QRCode(document.getElementById('qrcode-desktop'), {
-      text: DEEPLINK, width: 220, height: 220,
+  // Desktop QR 1: Our page (camera scan → choose bank)
+  if (document.getElementById('qrcode-page')) {
+    new QRCode(document.getElementById('qrcode-page'), {
+      text: PAGE_URL, width: 200, height: 200,
+      colorDark: '#1a1a2e', colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  }
+  // Desktop QR 2: NBU deeplink (bank app scan → auto-fill)
+  if (document.getElementById('qrcode-nbu')) {
+    new QRCode(document.getElementById('qrcode-nbu'), {
+      text: DEEPLINK, width: 150, height: 150,
       colorDark: '#1a1a2e', colorLight: '#ffffff',
       correctLevel: QRCode.CorrectLevel.M
     });
