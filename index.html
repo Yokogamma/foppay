@@ -453,8 +453,14 @@ var BANKS_ANDROID = [
 ];
 
 var BANKS_IOS = [
-  { name:'ПриватБанк', cls:'privat', letter:'P', href:'privat24://' },
-  { name:'monobank',   cls:'mono',   letter:'m', href:'mono://' }
+  { name:'ПриватБанк', cls:'privat', letter:'P' },
+  { name:'monobank',   cls:'mono',   letter:'m' },
+  { name:'Ощадбанк',   cls:'oschad', letter:'О' },
+  { name:'Raiffeisen',  cls:'raiff',  letter:'R' },
+  { name:'àбанк',      cls:'abank',  letter:'à' },
+  { name:'ПУМБ',       cls:'pumb',   letter:'П' },
+  { name:'UKRSIB',     cls:'ukrsib', letter:'U' },
+  { name:'Sense',      cls:'sense',  letter:'S' }
 ];
 
 // ═══ Init ═══
@@ -470,9 +476,9 @@ function setupBanks() {
   var path = DEEPLINK.replace('https://','');
 
   if (isIOS) {
-    // iOS: 2 bank buttons + other bank link
+    // iOS: all banks use DEEPLINK (NBU QR standard — Universal Links)
     grid.innerHTML = BANKS_IOS.map(function(b) {
-      return '<a class="bank-btn ' + b.cls + '" href="' + b.href + '">' +
+      return '<a class="bank-btn ' + b.cls + '" href="' + DEEPLINK + '">' +
         '<span class="icon">' + b.letter + '</span>' + b.name + '</a>';
     }).join('');
     otherLink.href = DEEPLINK;
