@@ -453,14 +453,8 @@ var BANKS_ANDROID = [
 ];
 
 var BANKS_IOS = [
-  { name:'ПриватБанк', cls:'privat', letter:'P' },
-  { name:'monobank',   cls:'mono',   letter:'m' },
-  { name:'Ощадбанк',   cls:'oschad', letter:'О' },
-  { name:'Raiffeisen',  cls:'raiff',  letter:'R' },
-  { name:'àбанк',      cls:'abank',  letter:'à' },
-  { name:'ПУМБ',       cls:'pumb',   letter:'П' },
-  { name:'UKRSIB',     cls:'ukrsib', letter:'U' },
-  { name:'Sense',      cls:'sense',  letter:'S' }
+  { name:'monobank',   cls:'mono',   letter:'m', scheme:'mono' },
+  { name:'ПриватБанк', cls:'privat', letter:'P', scheme:'privat24' }
 ];
 
 // ═══ Init ═══
@@ -476,15 +470,15 @@ function setupBanks() {
   var path = DEEPLINK.replace('https://','');
 
   if (isIOS) {
-    // iOS: all banks use DEEPLINK (NBU QR standard — Universal Links)
+    // Match ibanoplata for banks with known iOS URL schemes.
     grid.innerHTML = BANKS_IOS.map(function(b) {
-      return '<a class="bank-btn ' + b.cls + '" href="' + DEEPLINK + '">' +
+      var iosUrl = b.scheme ? DEEPLINK.replace('https://', b.scheme + '://') : DEEPLINK;
+      return '<a class="bank-btn ' + b.cls + '" href="' + iosUrl + '">' +
         '<span class="icon">' + b.letter + '</span>' + b.name + '</a>';
     }).join('');
     otherLink.href = DEEPLINK;
     otherLink.textContent = 'Інший банк →';
-    // Hide terminal tab on iOS
-    document.getElementById('tabTerminal').style.display = 'none';
+    // Terminal tab visible on iOS too
   } else {
     // Android (and fallback): 8 bank buttons with intent://
     grid.innerHTML = BANKS_ANDROID.map(function(b) {
