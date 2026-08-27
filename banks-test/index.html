@@ -90,6 +90,20 @@
   .bank-btn.izi .icon { background:#5147ff; }
   .bank-btn.credit-dnipro .icon { background:#0057b8; }
   .bank-btn.globus .icon { background:#138b78; }
+  .bank-btn.obank .icon { background:#7a2fb5; }
+  .bank-btn.accord .icon { background:#d5202f; }
+  .bank-btn.rada .icon { background:#1155a5; }
+  .bank-btn.unex .icon { background:#5b2b82; }
+  .bank-btn.alliance .icon { background:#164a9b; }
+  .bank-btn.pivdenny .icon { background:#0057a8; }
+  .bank-btn.mtb .icon { background:#183b6b; }
+  .bank-btn.winbank .icon { background:#00529b; }
+  .bank-btn.pravex .icon { background:#ef7d00; }
+  .bank-btn.altbank .icon { background:#582c83; }
+  .bank-btn.bank34 .icon { background:#253b70; }
+  .bank-btn.procredit .icon { background:#178647; }
+  .bank-btn.grant .icon { background:#b11f3d; }
+  .bank-btn.ukrsib-business .icon { background:#004b3f; }
   .bank-btn .bank-name { min-width:0; line-height:1.2; overflow-wrap:anywhere; }
   .banks-note { margin-top:12px; color:#8a6d1d; background:#fff8df; border:1px solid #f2df9b; border-radius:10px; padding:9px 10px; font-size:10.5px; line-height:1.45; }
   .other-bank-link { display:block; text-align:center; margin-top:12px; padding:10px; font-size:13px; color:var(--teal); text-decoration:none; font-weight:500; }
@@ -272,7 +286,7 @@
       <div class="banks-grid" id="banksGrid">
         <!-- Filled by JS based on OS -->
       </div>
-      <div class="banks-note">Тестові інтеграції: відкриття та заповнення реквізитів залежать від версії банківського застосунку. Перевірте дані перед оплатою.</div>
+      <div class="banks-note">Тестові інтеграції: 14 додаткових Android-застосунків додано за переліком Pay24, package ID звірено з Google Play. Відкриття та заповнення реквізитів потребують перевірки на телефоні.</div>
       <a class="other-bank-link" id="otherBankLink" href="#">Інший банк →</a>
     </div>
   </div>
@@ -532,7 +546,21 @@ var BANKS = [
   { code:'kredo', name:'KredoBank', cls:'kredo', letter:'K', ios:null, android:{ type:'intent', pkg:'ua.android.kredobank.prod' } },
   { code:'izi', name:'izibank', cls:'izi', letter:'i', ios:null, android:{ type:'intent', pkg:'ua.izibank.app' } },
   { code:'credit-dnipro', name:'Кредит Дніпро', cls:'credit-dnipro', letter:'КД', ios:null, android:{ type:'intent', pkg:'com.creditdnepr.mb' } },
-  { code:'globus', name:'Глобус Банк', cls:'globus', letter:'G', ios:null, android:{ type:'intent', pkg:'com.t18.bone.personal.globus' } }
+  { code:'globus', name:'Глобус Банк', cls:'globus', letter:'G', ios:null, android:{ type:'intent', pkg:'com.t18.bone.personal.globus' } },
+  { code:'obank', name:'O.Bank', cls:'obank', letter:'O', ios:null, android:{ type:'intent', pkg:'ua.ideabank.obank' } },
+  { code:'accord', name:'Акордбанк', cls:'accord', letter:'А', ios:null, android:{ type:'intent', pkg:'online.kapowai.accordbank' } },
+  { code:'rada', name:'RB24', cls:'rada', letter:'R', ios:null, android:{ type:'intent', pkg:'com.radabank.rb24' } },
+  { code:'unex', name:'Unex Bank', cls:'unex', letter:'U', ios:null, android:{ type:'intent', pkg:'online.kapowai.unexbank' } },
+  { code:'alliance', name:'Alliance', cls:'alliance', letter:'A', ios:null, android:{ type:'intent', pkg:'ua.monvel.bankalliance' } },
+  { code:'pivdenny', name:'Pivdenny Online', cls:'pivdenny', letter:'П', ios:null, android:{ type:'intent', pkg:'com.bank.pivdenny' } },
+  { code:'mtb', name:'MTB360', cls:'mtb', letter:'M', ios:null, android:{ type:'intent', pkg:'com.ua.mtb.bank' } },
+  { code:'winbank', name:'Winbank', cls:'winbank', letter:'W', ios:null, android:{ type:'intent', pkg:'ua.piraeusbank.mobile.app.pbu' } },
+  { code:'pravex', name:'PRAVEX ONLINE', cls:'pravex', letter:'P', ios:null, android:{ type:'intent', pkg:'ua.com.pravex.online' } },
+  { code:'altbank', name:'Altbank Private', cls:'altbank', letter:'A', ios:null, android:{ type:'intent', pkg:'by.st.alt.fiz' } },
+  { code:'bank34', name:'Smart Bank 3/4', cls:'bank34', letter:'3/4', ios:null, android:{ type:'intent', pkg:'online.kapowai.bank34online' } },
+  { code:'procredit', name:'ProCredit Bank', cls:'procredit', letter:'PC', ios:null, android:{ type:'intent', pkg:'com.quipugmbh.mba.ukraine' } },
+  { code:'grant', name:'Смарт-Грант', cls:'grant', letter:'Г', ios:null, android:{ type:'intent', pkg:'ua.grant.smart' } },
+  { code:'ukrsib-business', name:'UKRSIB business', cls:'ukrsib-business', letter:'UB', ios:null, android:{ type:'intent', pkg:'com.ukrsibbank.ukrsibbusiness' } }
 ];
 
 function getPlatformBanks() {
