@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
 <title>Оплата замовлення №45678</title>
 
 <!-- Open Graph — превью в Telegram, Viber, WhatsApp -->
@@ -20,9 +22,22 @@
 <meta name="twitter:title" content="Рахунок на оплату — 456 грн">
 <meta name="twitter:description" content="ФОП Сорохан Мар'яна Юріївна · Замовлення №45678">
 <meta name="twitter:image" content="https://yokogamma.github.io/foppay/og-image.png">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap');
+  /* Self-hosted Onest — no third-party request from a sensitive pay page. */
+  @font-face {
+    font-family:'Onest';
+    font-style:normal;
+    font-weight:400;
+    font-display:swap;
+    src:url('./fonts/Onest-Regular.ttf') format('truetype');
+  }
+  @font-face {
+    font-family:'Onest';
+    font-style:normal;
+    font-weight:700;
+    font-display:swap;
+    src:url('./fonts/Onest-Bold.ttf') format('truetype');
+  }
   :root { --teal:#00a8b5; --teal-dark:#008d99; --bg:#f0f2f5; --text:#1a1a2e; --muted:#8c8c8c; --border:#f0f0f0; --card-bg:#f7f8fa; --card-border:#eef0f2; }
   * { box-sizing:border-box; margin:0; padding:0; }
   body { font-family:'Onest',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:16px; }
@@ -71,7 +86,7 @@
   /* QR section */
   .qr-section { text-align:center; padding:20px 24px 16px; }
   .qr-wrap { display:inline-block; padding:14px; background:#f9fafb; border-radius:14px; border:1px solid #eee; }
-  #qrcode canvas, #qrcode-desktop canvas { border-radius:4px; }
+  .qr-wrap img { display:block; width:180px; height:180px; }
   .qr-hint { font-size:12.5px; color:var(--muted); margin-top:12px; line-height:1.5; }
   .qr-steps { text-align:left; padding:0 24px 16px; font-size:13px; color:#555; line-height:1.6; }
   .qr-steps ol { padding-left:20px; }
@@ -166,8 +181,8 @@
     .dqr-divider::before { content:''; position:absolute; left:20%; right:20%; top:50%; height:1px; background:#e0e0e0; }
     .dqr-divider span { position:relative; background:#fff; padding:0 12px; font-size:12px; color:var(--muted); font-weight:500; }
     .qr-wrap--small { padding:10px; }
-    .qr-wrap--small canvas { width:150px !important; height:150px !important; }
-    #qrcode-page canvas { width:200px !important; height:200px !important; }
+    .qr-wrap--small img { width:150px; height:150px; }
+    #qrcode-page { width:200px; height:200px; }
     .dqr-banks-strip { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:10px; max-width:280px; margin-left:auto; margin-right:auto; }
     .dqr-bank-tag { display:flex; align-items:center; gap:5px; padding:5px 8px; border-radius:8px; font-size:11px; font-weight:600; color:#555; background:var(--card-bg); border:1px solid var(--card-border); justify-content:center; }
     .dqr-bank-tag i { width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-style:normal; font-size:11px; font-weight:700; color:#fff; flex-shrink:0; }
@@ -222,7 +237,7 @@
     <div class="tab" data-tab="terminal" id="tabTerminal">Термінал</div>
   </div>
 
-  <!-- TAB 1: Banks (Android) -->
+  <!-- TAB 1: Banks (OS-specific) -->
   <div class="tab-content active" id="tab-banks">
     <div class="banks-section">
       <div class="banks-grid" id="banksGrid">
@@ -235,7 +250,7 @@
   <!-- TAB 2: QR -->
   <div class="tab-content" id="tab-qr">
     <div class="qr-section">
-      <div class="qr-wrap"><div id="qrcode"></div></div>
+      <div class="qr-wrap"><img class="qr-payment" data-qr="payment" alt="QR-код для оплати через банківський додаток" width="180" height="180"></div>
       <div class="qr-hint">Скануйте <b>зсередини додатку</b> вашого банку</div>
     </div>
     <div class="qr-steps">
@@ -248,7 +263,7 @@
     </div>
   </div>
 
-  <!-- TAB 3: Terminal (Android only) -->
+  <!-- TAB 3: Terminal -->
   <div class="tab-content" id="tab-terminal">
     <div class="terminal-section">
       <div class="section-title">
@@ -256,9 +271,9 @@
         Знайти найближчий
       </div>
       <div class="terminal-buttons">
-        <a class="term-btn ibox" href="https://www.google.com/maps/search/ibox+термінал/" target="_blank"><span class="term-icon">iB</span>iBox</a>
-        <a class="term-btn easypay" href="https://www.google.com/maps/search/easypay+термінал/" target="_blank"><span class="term-icon">EP</span>EasyPay</a>
-        <a class="term-btn privat-term" href="https://www.google.com/maps/search/приватбанк+термінал+самообслуговування/" target="_blank"><span class="term-icon">P</span>ПриватБанк</a>
+        <a class="term-btn ibox" href="https://www.google.com/maps/search/ibox+термінал/" target="_blank" rel="noopener noreferrer"><span class="term-icon">iB</span>iBox</a>
+        <a class="term-btn easypay" href="https://www.google.com/maps/search/easypay+термінал/" target="_blank" rel="noopener noreferrer"><span class="term-icon">EP</span>EasyPay</a>
+        <a class="term-btn privat-term" href="https://www.google.com/maps/search/приватбанк+термінал+самообслуговування/" target="_blank" rel="noopener noreferrer"><span class="term-icon">P</span>ПриватБанк</a>
       </div>
       <div class="find-hint">Відкриє Google Maps поруч з вами</div>
       <div class="section-title">
@@ -267,7 +282,7 @@
       </div>
       <div class="accordion">
         <div class="acc-item">
-          <div class="acc-header" onclick="toggleAcc(this)"><span>iBox / EasyPay</span><span class="arrow">▶</span></div>
+          <div class="acc-header"><span>iBox / EasyPay</span><span class="arrow">▶</span></div>
           <div class="acc-body">
             <ol>
               <li>На екрані терміналу оберіть <b>«Оплата послуг»</b> → <b>«За реквізитами»</b></li>
@@ -280,7 +295,7 @@
           </div>
         </div>
         <div class="acc-item">
-          <div class="acc-header" onclick="toggleAcc(this)"><span>Термінал ПриватБанку</span><span class="arrow">▶</span></div>
+          <div class="acc-header"><span>Термінал ПриватБанку</span><span class="arrow">▶</span></div>
           <div class="acc-body">
             <ol>
               <li>Вставте картку ПриватБанку або торкніться NFC</li>
@@ -308,7 +323,7 @@
         </div>
         <div class="cs-label">Призначення</div>
         <div class="cs-value name" style="margin-bottom:16px">Оплата замовлення №45678</div>
-        <button class="fullscreen-btn" onclick="openFullscreen()">
+        <button class="fullscreen-btn" data-action="fullscreen_open">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
           На весь екран
         </button>
@@ -319,15 +334,15 @@
   <!-- Copy buttons -->
   <div class="copy-section">
     <div class="copy-row">
-      <button class="copy-btn" onclick="copyText(DEEPLINK,'Посилання скопійовано!')">
+      <button class="copy-btn" data-action="copy_link">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
         Посилання
       </button>
-      <button class="copy-btn" onclick="copyText(IBAN,'IBAN скопійовано!')">
+      <button class="copy-btn" data-action="copy_iban">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
         IBAN
       </button>
-      <button class="copy-btn" onclick="copyText(EDRPOU,'ЄДРПОУ скопійовано!')">
+      <button class="copy-btn" data-action="copy_edrpou">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
         ЄДРПОУ
       </button>
@@ -348,7 +363,7 @@
       <!-- QR 1: Our page (camera scan) -->
       <div class="dqr-block">
         <div class="dqr-label">📱 Скануйте камерою телефону</div>
-        <div class="qr-wrap"><div id="qrcode-page"></div></div>
+        <div class="qr-wrap"><img id="qrcode-page" data-qr="page" alt="QR-код сторінки оплати" width="200" height="200"></div>
         <div class="dqr-hint">Відкриється сторінка з вибором банку</div>
       </div>
 
@@ -363,7 +378,7 @@
           <span class="dqr-bank-tag oschad"><i>О</i>Ощадбанк</span>
           <span class="dqr-bank-tag raiff"><i>R</i>Raiffeisen</span>
         </div>
-        <div class="qr-wrap qr-wrap--small"><div id="qrcode-nbu"></div></div>
+        <div class="qr-wrap qr-wrap--small"><img class="qr-payment" data-qr="payment" alt="QR-код НБУ з реквізитами" width="150" height="150"></div>
         <div class="dqr-hint">Реквізити заповняться автоматично</div>
       </div>
     </div>
@@ -372,28 +387,31 @@
       <div>
         <div class="desktop-detail-row">
           <div><div class="d-label">Отримувач</div><div class="d-value">ФОП Сорохан Мар'яна Юріївна</div></div>
-          <button class="desktop-copy-btn" onclick="dCopy(this,'ФОП Сорохан Мар\u0027яна Юріївна')" title="Скопіювати">📋</button>
+          <button class="desktop-copy-btn" data-action="copy_name" title="Скопіювати">📋</button>
+        </div>
+        <div class="desktop-detail-row">
+          <div><div class="d-label">Банк</div><div class="d-value">АТ КБ "ПРИВАТБАНК"</div></div>
         </div>
         <div class="desktop-detail-row">
           <div><div class="d-label">IBAN</div><div class="d-value mono">UA74 3052 9900 0002 6005 0468 02851</div></div>
-          <button class="desktop-copy-btn" onclick="dCopy(this,'UA743052990000026005046802851')" title="Скопіювати">📋</button>
+          <button class="desktop-copy-btn" data-action="copy_iban" title="Скопіювати">📋</button>
         </div>
         <div class="desktop-detail-row">
           <div><div class="d-label">ЄДРПОУ</div><div class="d-value mono">3162725560</div></div>
-          <button class="desktop-copy-btn" onclick="dCopy(this,'3162725560')" title="Скопіювати">📋</button>
+          <button class="desktop-copy-btn" data-action="copy_edrpou" title="Скопіювати">📋</button>
         </div>
         <div class="desktop-detail-row">
           <div><div class="d-label">Сума</div><div class="d-value">456 грн</div></div>
-          <button class="desktop-copy-btn" onclick="dCopy(this,'456')" title="Скопіювати">📋</button>
+          <button class="desktop-copy-btn" data-action="copy_amount" title="Скопіювати">📋</button>
         </div>
         <div class="desktop-detail-row">
           <div><div class="d-label">Призначення</div><div class="d-value">Оплата замовлення №45678</div></div>
-          <button class="desktop-copy-btn" onclick="dCopy(this,'Оплата замовлення №45678')" title="Скопіювати">📋</button>
+          <button class="desktop-copy-btn" data-action="copy_purpose" title="Скопіювати">📋</button>
         </div>
       </div>
-      <button class="desktop-copy-all" onclick="copyAll()">📋 Скопіювати всі реквізити</button>
+      <button class="desktop-copy-all" data-action="copy_all">📋 Скопіювати всі реквізити</button>
       <div class="desktop-privat">
-        <a href="https://next.privat24.ua" target="_blank">
+        <a href="https://next.privat24.ua" target="_blank" rel="noopener noreferrer">
           <span class="icon">P</span>
           Відкрити Приват24
         </a>
@@ -406,13 +424,13 @@
 
 <!-- Fullscreen overlay -->
 <div class="fs-overlay" id="fsOverlay">
-  <button class="fs-close" onclick="closeFullscreen()">✕</button>
+  <button class="fs-close" data-action="fullscreen_close">✕</button>
   <div class="fs-content">
     <div class="fs-badge">Замовлення №45678</div>
     <div class="fs-label">IBAN</div>
     <div class="fs-value">UA74 3052 9900<br>0002 6005 0468 02851</div>
     <div class="fs-label">Отримувач</div>
-    <div class="fs-value name">ФОП Сорохан<br>Мар'яна Юріївна</div>
+    <div class="fs-value name">ФОП Сорохан Мар'яна Юріївна</div>
     <div class="fs-row">
       <div class="fs-col"><div class="fs-label">ЄДРПОУ</div><div class="fs-value">3162725560</div></div>
       <div class="fs-col"><div class="fs-label">Сума</div><div class="fs-value">456 грн</div></div>
@@ -425,27 +443,23 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══ Payment Data ═══
+var QR_PAYMENT_SRC = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2ZmZmZmZiIvPjxnIHRyYW5zZm9ybT0ic2NhbGUoMy42NzMpIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLDApIj48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik04IDBMOCAxTDkgMUw5IDBaTTEwIDBMMTAgMkw4IDJMOCA1TDkgNUw5IDNMMTAgM0wxMCAyTDExIDJMMTEgNUwxMCA1TDEwIDdMOSA3TDkgNkw4IDZMOCA3TDkgN0w5IDhMOCA4TDggOUw3IDlMNyA4TDYgOEw2IDlMNyA5TDcgMTBMNSAxMEw1IDlMNCA5TDQgOEwwIDhMMCA5TDIgOUwyIDExTDAgMTFMMCAxM0wxIDEzTDEgMTZMMCAxNkwwIDE4TDEgMThMMSAxOUw0IDE5TDQgMThMNiAxOEw2IDE5TDcgMTlMNyAxOEwxMSAxOEwxMSAxN0wxNCAxN0wxNCAxOEwxNyAxOEwxNyAxOUwxOCAxOUwxOCAyMEwxNyAyMEwxNyAyMkwxNiAyMkwxNiAyMEwxNSAyMEwxNSAxOUwxMyAxOUwxMyAyMEwxMiAyMEwxMiAxOUwxMSAxOUwxMSAyMEwxMiAyMEwxMiAyM0wxMyAyM0wxMyAyMkwxNCAyMkwxNCAyMEwxNSAyMEwxNSAyM0wxNiAyM0wxNiAyNEwxNyAyNEwxNyAyN0wxNSAyN0wxNSAyNkwxNiAyNkwxNiAyNUwxNCAyNUwxNCAyNEwxMyAyNEwxMyAyNUwxNCAyNUwxNCAyOEwxMyAyOEwxMyAyNkwxMiAyNkwxMiAyNUw5IDI1TDkgMjNMMTAgMjNMMTAgMjJMNCAyMkw0IDI0TDMgMjRMMyAyNUwxIDI1TDEgMjJMMyAyMkwzIDIxTDQgMjFMNCAyMEwyIDIwTDIgMjFMMSAyMUwxIDIwTDAgMjBMMCAyNkwxIDI2TDEgMjhMMCAyOEwwIDMxTDIgMzFMMiAzM0wxIDMzTDEgMzJMMCAzMkwwIDM0TDEgMzRMMSAzNUwwIDM1TDAgMzdMMSAzN0wxIDM2TDIgMzZMMiAzNEw0IDM0TDQgMzVMMyAzNUwzIDM2TDQgMzZMNCAzNUw1IDM1TDUgMzZMNiAzNkw2IDM3TDUgMzdMNSAzOUw4IDM5TDggMzdMOSAzN0w5IDQxTDggNDFMOCA0MEw2IDQwTDYgNDFMOCA0MUw4IDQyTDkgNDJMOSA0NEwxMCA0NEwxMCA0NUw4IDQ1TDggNDlMOSA0OUw5IDQ2TDEwIDQ2TDEwIDQ4TDExIDQ4TDExIDQ5TDEyIDQ5TDEyIDQ4TDExIDQ4TDExIDQ1TDEyIDQ1TDEyIDQ2TDEzIDQ2TDEzIDQ1TDEyIDQ1TDEyIDQ0TDEwIDQ0TDEwIDQyTDkgNDJMOSA0MUwxMCA0MUwxMCAzOEwxMSAzOEwxMSAzN0wxMCAzN0wxMCAzNkw4IDM2TDggMzRMNiAzNEw2IDMzTDcgMzNMNyAzMkw5IDMyTDkgMzBMNiAzMEw2IDI5TDggMjlMOCAyOEw5IDI4TDkgMjlMMTAgMjlMMTAgMzBMMTEgMzBMMTEgMzFMMTAgMzFMMTAgMzJMMTEgMzJMMTEgMzRMMTIgMzRMMTIgMzlMMTEgMzlMMTEgNDNMMTIgNDNMMTIgMzlMMTMgMzlMMTMgMzhMMTYgMzhMMTYgMzdMMTkgMzdMMTkgMzZMMjAgMzZMMjAgMzhMMTcgMzhMMTcgMzlMMTYgMzlMMTYgNDBMMTcgNDBMMTcgMzlMMTggMzlMMTggNDBMMTkgNDBMMTkgNDJMMTggNDJMMTggNDFMMTUgNDFMMTUgNDBMMTMgNDBMMTMgNDNMMTcgNDNMMTcgNDJMMTggNDJMMTggNDNMMTkgNDNMMTkgNDRMMjAgNDRMMjAgNDVMMjEgNDVMMjEgNDZMMTkgNDZMMTkgNDdMMTggNDdMMTggNDhMMTcgNDhMMTcgNDdMMTYgNDdMMTYgNDZMMTUgNDZMMTUgNDdMMTQgNDdMMTQgNDhMMTMgNDhMMTMgNDlMMTQgNDlMMTQgNDhMMTUgNDhMMTUgNDlMMTYgNDlMMTYgNDhMMTcgNDhMMTcgNDlMMTkgNDlMMTkgNDhMMjAgNDhMMjAgNDlMMjEgNDlMMjEgNDdMMjIgNDdMMjIgNDhMMjMgNDhMMjMgNDlMMjQgNDlMMjQgNDhMMjUgNDhMMjUgNDdMMjIgNDdMMjIgNDZMMjMgNDZMMjMgNDVMMjQgNDVMMjQgNDZMMjUgNDZMMjUgNDVMMjcgNDVMMjcgNDRMMjggNDRMMjggNDVMMjkgNDVMMjkgNDZMMzAgNDZMMzAgNDdMMjggNDdMMjggNDZMMjYgNDZMMjYgNDdMMjggNDdMMjggNDhMMjkgNDhMMjkgNDlMMzAgNDlMMzAgNDdMMzEgNDdMMzEgNDlMMzIgNDlMMzIgNDdMMzMgNDdMMzMgNDZMMzEgNDZMMzEgNDVMMjkgNDVMMjkgNDRMMzQgNDRMMzQgNDNMMzUgNDNMMzUgNDZMMzggNDZMMzggNDdMMzcgNDdMMzcgNDhMMzYgNDhMMzYgNDdMMzUgNDdMMzUgNDhMMzMgNDhMMzMgNDlMMzcgNDlMMzcgNDhMMzggNDhMMzggNDlMMzkgNDlMMzkgNDhMMzggNDhMMzggNDdMNDAgNDdMNDAgNDhMNDEgNDhMNDEgNDdMNDMgNDdMNDMgNDhMNDUgNDhMNDUgNDlMNDYgNDlMNDYgNDhMNDcgNDhMNDcgNDlMNDkgNDlMNDkgNDhMNDcgNDhMNDcgNDdMNDkgNDdMNDkgNDZMNDggNDZMNDggNDVMNDkgNDVMNDkgNDRMNDcgNDRMNDcgNDdMNDUgNDdMNDUgNDRMNDYgNDRMNDYgNDNMNDkgNDNMNDkgNDJMNDYgNDJMNDYgNDFMNDUgNDFMNDUgNDBMNDMgNDBMNDMgMzlMNDIgMzlMNDIgMzhMNDMgMzhMNDMgMzdMNDQgMzdMNDQgMzhMNDUgMzhMNDUgMzlMNDcgMzlMNDcgNDFMNDkgNDFMNDkgMzlMNDggMzlMNDggMzhMNDkgMzhMNDkgMzZMNDcgMzZMNDcgMzJMNDggMzJMNDggMzRMNDkgMzRMNDkgMzJMNDggMzJMNDggMzFMNDkgMzFMNDkgMjlMNDggMjlMNDggMjhMNDkgMjhMNDkgMjdMNDggMjdMNDggMjZMNDkgMjZMNDkgMjRMNDcgMjRMNDcgMjNMNDYgMjNMNDYgMjJMNDggMjJMNDggMjBMNDkgMjBMNDkgMThMNDcgMThMNDcgMTdMNDYgMTdMNDYgMTlMNDggMTlMNDggMjBMNDcgMjBMNDcgMjFMNDYgMjFMNDYgMjBMNDUgMjBMNDUgMjFMNDQgMjFMNDQgMjJMNDMgMjJMNDMgMjBMNDEgMjBMNDEgMTlMNDIgMTlMNDIgMThMNDEgMThMNDEgMTdMMzkgMTdMMzkgMTVMNDAgMTVMNDAgMTZMNDEgMTZMNDEgMTVMNDAgMTVMNDAgMTNMNDEgMTNMNDEgMTJMNDYgMTJMNDYgMTNMNDUgMTNMNDUgMTRMNDQgMTRMNDQgMTNMNDMgMTNMNDMgMTRMNDIgMTRMNDIgMTZMNDMgMTZMNDMgMTdMNDUgMTdMNDUgMTZMNDMgMTZMNDMgMTVMNDUgMTVMNDUgMTRMNDYgMTRMNDYgMTVMNDggMTVMNDggMTZMNDkgMTZMNDkgMTVMNDggMTVMNDggMTRMNDkgMTRMNDkgMTNMNDggMTNMNDggMTFMNDUgMTFMNDUgMTBMNDYgMTBMNDYgOUw0NyA5TDQ3IDhMNDQgOEw0NCA5TDQ1IDlMNDUgMTBMNDMgMTBMNDMgOUw0MiA5TDQyIDhMMzkgOEwzOSA1TDM4IDVMMzggMkwzOSAyTDM5IDRMNDAgNEw0MCAzTDQxIDNMNDEgMEw0MCAwTDQwIDFMMzcgMUwzNyAwTDM1IDBMMzUgMUwzNCAxTDM0IDBMMzIgMEwzMiAxTDMzIDFMMzMgM0wzNCAzTDM0IDRMMzIgNEwzMiAyTDMwIDJMMzAgMUwzMSAxTDMxIDBMMjkgMEwyOSAyTDI4IDJMMjggMUwyNiAxTDI2IDBMMjUgMEwyNSAxTDI0IDFMMjQgMEwyMyAwTDIzIDFMMjQgMUwyNCAzTDIzIDNMMjMgMkwyMiAyTDIyIDFMMjAgMUwyMCAwTDE5IDBMMTkgMUwyMCAxTDIwIDJMMjEgMkwyMSAzTDIwIDNMMjAgNEwxOSA0TDE5IDJMMTggMkwxOCA1TDE3IDVMMTcgNkwxNiA2TDE2IDRMMTcgNEwxNyAzTDE2IDNMMTYgMUwxMyAxTDEzIDBMMTIgMEwxMiAxTDExIDFMMTEgMFpNMTcgMEwxNyAxTDE4IDFMMTggMFpNMTMgMkwxMyAzTDEyIDNMMTIgNUwxMyA1TDEzIDhMMTIgOEwxMiA2TDExIDZMMTEgN0wxMCA3TDEwIDhMMTEgOEwxMSA5TDEyIDlMMTIgMTFMMTAgMTFMMTAgOUw4IDlMOCAxMEw3IDEwTDcgMTFMNiAxMUw2IDEyTDUgMTJMNSAxM0w2IDEzTDYgMTRMNSAxNEw1IDE1TDQgMTVMNCAxNkwzIDE2TDMgMTdMMiAxN0wyIDE4TDMgMThMMyAxN0w0IDE3TDQgMTZMNSAxNkw1IDE1TDYgMTVMNiAxNkw3IDE2TDcgMTdMNiAxN0w2IDE4TDcgMThMNyAxN0wxMCAxN0wxMCAxNkwxMSAxNkwxMSAxNUw5IDE1TDkgMTRMMTAgMTRMMTAgMTNMMTMgMTNMMTMgMTVMMTIgMTVMMTIgMTZMMTMgMTZMMTMgMTVMMTQgMTVMMTQgMTZMMTcgMTZMMTcgMThMMTggMThMMTggMTdMMTkgMTdMMTkgMThMMjEgMThMMjEgMTdMMTkgMTdMMTkgMTRMMjAgMTRMMjAgMTZMMjEgMTZMMjEgMTRMMjAgMTRMMjAgMTNMMTkgMTNMMTkgMTRMMTcgMTRMMTcgMTJMMjAgMTJMMjAgMTFMMjEgMTFMMjEgMTBMMjIgMTBMMjIgOEwyMSA4TDIxIDlMMjAgOUwyMCA4TDE5IDhMMTkgN0wyMCA3TDIwIDVMMTggNUwxOCA2TDE3IDZMMTcgN0wxNiA3TDE2IDZMMTUgNkwxNSA1TDE0IDVMMTQgNEwxNSA0TDE1IDNMMTQgM0wxNCAyWk0yNSAyTDI1IDNMMjYgM0wyNiAyWk0yNyAyTDI3IDVMMjkgNUwyOSAzTDI4IDNMMjggMlpNMzUgMkwzNSAzTDM2IDNMMzYgMlpNMjEgNEwyMSA1TDIyIDVMMjIgNFpNMzAgNEwzMCA1TDMxIDVMMzEgNFpNMzQgNEwzNCA1TDMyIDVMMzIgNkwzMSA2TDMxIDdMMzIgN0wzMiA4TDMwIDhMMzAgOUwyOSA5TDI5IDExTDI4IDExTDI4IDEwTDI3IDEwTDI3IDlMMjQgOUwyNCAxMEwyMyAxMEwyMyAxMUwyNCAxMUwyNCAxMkwyNiAxMkwyNiAxMUwyOCAxMUwyOCAxNEwyNyAxNEwyNyAxNUwyNiAxNUwyNiAxNEwyNSAxNEwyNSAxNkwyNCAxNkwyNCAxNEwyMyAxNEwyMyAxM0wyMiAxM0wyMiAxMkwyMSAxMkwyMSAxM0wyMiAxM0wyMiAxNkwyMyAxNkwyMyAxN0wyNCAxN0wyNCAxOEwyMiAxOEwyMiAxOUwyMCAxOUwyMCAyMEwxOCAyMEwxOCAyMkwxNyAyMkwxNyAyM0wyMCAyM0wyMCAyMkwyMyAyMkwyMyAxOUwyNCAxOUwyNCAyMkwyOCAyMkwyOCAyM0wyNyAyM0wyNyAyNUwyOSAyNUwyOSAyNkwyOCAyNkwyOCAyN0wyNyAyN0wyNyAyOUwyOCAyOUwyOCAzMEwyNiAzMEwyNiAyOUwyNSAyOUwyNSAyOEwyNCAyOEwyNCAzMUwyMiAzMUwyMiAzM0wyMyAzM0wyMyAzMkwyNSAzMkwyNSAzNEwyNCAzNEwyNCAzNkwyMyAzNkwyMyAzNEwyMiAzNEwyMiAzNUwyMSAzNUwyMSAzOUwyMCAzOUwyMCA0M0wyMSA0M0wyMSA0NEwyMiA0NEwyMiA0MkwyMSA0MkwyMSAzOUwyMiAzOUwyMiA0MEwyMyA0MEwyMyAzOUwyNCAzOUwyNCA0MEwyNyA0MEwyNyAzOUwyOSAzOUwyOSA0MEwyOCA0MEwyOCA0M0wyOSA0M0wyOSA0MUwzMCA0MUwzMCA0M0wzMSA0M0wzMSA0MkwzMyA0MkwzMyA0M0wzNCA0M0wzNCA0MkwzMyA0MkwzMyA0MUwzMSA0MUwzMSAzOUwzMiAzOUwzMiA0MEwzNCA0MEwzNCAzOUwzMyAzOUwzMyAzNUwzNCAzNUwzNCAzOEwzNSAzOEwzNSA0MUwzNyA0MUwzNyA0M0wzNiA0M0wzNiA0MkwzNSA0MkwzNSA0M0wzNiA0M0wzNiA0NUwzNyA0NUwzNyA0M0wzOCA0M0wzOCA0NEwzOSA0NEwzOSA0M0w0MCA0M0w0MCAzOUw0MSAzOUw0MSA0MEw0MiA0MEw0MiAzOUw0MSAzOUw0MSAzOEw0MiAzOEw0MiAzN0w0MyAzN0w0MyAzNkw0MiAzNkw0MiAzN0wzOSAzN0wzOSAzOEwzOCAzOEwzOCA0MEwzNiA0MEwzNiAzOUwzNyAzOUwzNyAzOEwzNiAzOEwzNiAzN0wzNSAzN0wzNSAzNkwzNiAzNkwzNiAzNUwzNyAzNUwzNyAzNEwzNiAzNEwzNiAzM0wzNyAzM0wzNyAzMUwzOCAzMUwzOCAzNEwzOSAzNEwzOSAzNUw0MCAzNUw0MCAzNkw0MSAzNkw0MSAzNUw0MyAzNUw0MyAzM0w0MiAzM0w0MiAzNEw0MSAzNEw0MSAzNUw0MCAzNUw0MCAzNEwzOSAzNEwzOSAzM0w0MSAzM0w0MSAzMkwzOSAzMkwzOSAzMUw0MSAzMUw0MSAzMEw0MiAzMEw0MiAyOUw0MyAyOUw0MyAzMEw0NCAzMEw0NCAzMUw0MiAzMUw0MiAzMkw0NCAzMkw0NCAzMUw0NSAzMUw0NSAzMEw0NiAzMEw0NiAyOEw0NyAyOEw0NyAyNkw0OCAyNkw0OCAyNUw0NyAyNUw0NyAyNkw0NiAyNkw0NiAyM0w0NSAyM0w0NSAyN0w0NiAyN0w0NiAyOEw0NSAyOEw0NSAyOUw0NCAyOUw0NCAyOEw0MyAyOEw0MyAyN0w0MSAyN0w0MSAyOEw0MiAyOEw0MiAyOUw0MSAyOUw0MSAzMEw0MCAzMEw0MCAyOEwzOSAyOEwzOSAyN0w0MCAyN0w0MCAyNUwzOSAyNUwzOSAyN0wzNyAyN0wzNyAyNUwzNiAyNUwzNiAyNEwzNSAyNEwzNSAyMUwzMyAyMUwzMyAyMEwzNCAyMEwzNCAxOUwzNSAxOUwzNSAyMEwzNiAyMEwzNiAyMUwzOCAyMUwzOCAyMkwzOSAyMkwzOSAyMUw0MCAyMUw0MCAyMkw0MSAyMkw0MSAyMEwzOSAyMEwzOSAxOUw0MCAxOUw0MCAxOEwzOSAxOEwzOSAxN0wzOCAxN0wzOCAxNUwzNyAxNUwzNyAxNEwzOCAxNEwzOCAxMkwzOSAxMkwzOSAxM0w0MCAxM0w0MCAxMkwzOSAxMkwzOSAxMUw0MyAxMUw0MyAxMEw0MSAxMEw0MSA5TDM5IDlMMzkgOEwzNiA4TDM2IDlMMzQgOUwzNCA4TDM1IDhMMzUgN0wzNiA3TDM2IDZMMzUgNkwzNSA1TDM3IDVMMzcgN0wzOCA3TDM4IDVMMzcgNUwzNyA0Wk0yMyA1TDIzIDhMMjYgOEwyNiA1Wk0xNCA2TDE0IDhMMTUgOEwxNSA2Wk0xOCA2TDE4IDdMMTkgN0wxOSA2Wk0yMSA2TDIxIDdMMjIgN0wyMiA2Wk0yNCA2TDI0IDdMMjUgN0wyNSA2Wk0yNyA2TDI3IDdMMjggN0wyOCA2Wk0yOSA2TDI5IDdMMzAgN0wzMCA2Wk0zMiA2TDMyIDdMMzMgN0wzMyA4TDM0IDhMMzQgN0wzNSA3TDM1IDZMMzQgNkwzNCA3TDMzIDdMMzMgNlpNNDAgNkw0MCA3TDQxIDdMNDEgNlpNMTYgOEwxNiA5TDE3IDlMMTcgMTBMMTYgMTBMMTYgMTFMMjAgMTFMMjAgMTBMMTggMTBMMTggOUwxNyA5TDE3IDhaTTQ4IDhMNDggMTBMNDkgMTBMNDkgOFpNMyA5TDMgMTBMNCAxMEw0IDlaTTEzIDlMMTMgMTNMMTQgMTNMMTQgMTRMMTYgMTRMMTYgMTVMMTcgMTVMMTcgMTZMMTggMTZMMTggMTVMMTcgMTVMMTcgMTRMMTYgMTRMMTYgMTJMMTUgMTJMMTUgMTFMMTQgMTFMMTQgOVpNMzAgOUwzMCAxMUwyOSAxMUwyOSAxM0wzMCAxM0wzMCAxMUwzMiAxMUwzMiAxMkwzNCAxMkwzNCAxM0wzMyAxM0wzMyAxNEwzMiAxNEwzMiAxM0wzMSAxM0wzMSAxNUwzMCAxNUwzMCAxNEwyOCAxNEwyOCAxNkwyNiAxNkwyNiAxN0wyNyAxN0wyNyAxOEwyNiAxOEwyNiAyMEwyNSAyMEwyNSAyMUwyNyAyMUwyNyAyMEwyOCAyMEwyOCAyMkwyOSAyMkwyOSAyM0wyOCAyM0wyOCAyNEwzMSAyNEwzMSAyN0wzMiAyN0wzMiAyOEwzMSAyOEwzMSAyOUwzMyAyOUwzMyAzMUwzMSAzMUwzMSAzMEwzMCAzMEwzMCAyOUwyOSAyOUwyOSAzMEwyOCAzMEwyOCAzMkwyNyAzMkwyNyAzM0wyOCAzM0wyOCAzNEwyNSAzNEwyNSAzNUwyOCAzNUwyOCAzNkwzMSAzNkwzMSAzN0wzMiAzN0wzMiAzNUwzMyAzNUwzMyAzNEwzMSAzNEwzMSAzM0wyOSAzM0wyOSAzMEwzMCAzMEwzMCAzMUwzMSAzMUwzMSAzMkwzMyAzMkwzMyAzM0wzNiAzM0wzNiAzMkwzMyAzMkwzMyAzMUwzNSAzMUwzNSAyOEwzNCAyOEwzNCAyN0wzNSAyN0wzNSAyNkwzNCAyNkwzNCAyNUwzMiAyNUwzMiAyNEwzNCAyNEwzNCAyM0wzMiAyM0wzMiAyMkwzMyAyMkwzMyAyMUwyOSAyMUwyOSAyMEwzMCAyMEwzMCAxOUwzMSAxOUwzMSAxOEwzMCAxOEwzMCAxN0wyOSAxN0wyOSAxOEwyOCAxOEwyOCAxNkwyOSAxNkwyOSAxNUwzMCAxNUwzMCAxNkwzMSAxNkwzMSAxN0wzMyAxN0wzMyAxOEwzMiAxOEwzMiAyMEwzMyAyMEwzMyAxOUwzNCAxOUwzNCAxOEwzNiAxOEwzNiAyMEwzOCAyMEwzOCAyMUwzOSAyMUwzOSAyMEwzOCAyMEwzOCAxOUwzNyAxOUwzNyAxOEwzNiAxOEwzNiAxN0wzNSAxN0wzNSAxNkwzMSAxNkwzMSAxNUwzNCAxNUwzNCAxM0wzNiAxM0wzNiAxNEwzNSAxNEwzNSAxNUwzNiAxNUwzNiAxNkwzNyAxNkwzNyAxNUwzNiAxNUwzNiAxNEwzNyAxNEwzNyAxMkwzOCAxMkwzOCA5TDM3IDlMMzcgMTBMMzYgMTBMMzYgMTFMMzcgMTFMMzcgMTJMMzQgMTJMMzQgMTFMMzUgMTFMMzUgMTBMMzMgMTBMMzMgOUwzMiA5TDMyIDEwTDMxIDEwTDMxIDlaTTI0IDEwTDI0IDExTDI2IDExTDI2IDEwWk0zMiAxMEwzMiAxMUwzMyAxMUwzMyAxMFpNMyAxMUwzIDEzTDIgMTNMMiAxMkwxIDEyTDEgMTNMMiAxM0wyIDE1TDMgMTVMMyAxM0w0IDEzTDQgMTFaTTggMTFMOCAxMkw2IDEyTDYgMTNMOCAxM0w4IDE0TDkgMTRMOSAxMkwxMCAxMkwxMCAxMVpNNDYgMTNMNDYgMTRMNDggMTRMNDggMTNaTTYgMTRMNiAxNUw3IDE1TDcgMTZMOCAxNkw4IDE1TDcgMTVMNyAxNFpNMjkgMThMMjkgMTlMMzAgMTlMMzAgMThaTTQzIDE4TDQzIDE5TDQ1IDE5TDQ1IDE4Wk02IDIwTDYgMjFMNyAyMUw3IDIwWk04IDIwTDggMjFMOSAyMUw5IDIwWk0yMCAyMEwyMCAyMUwxOSAyMUwxOSAyMkwyMCAyMkwyMCAyMUwyMiAyMUwyMiAyMFpNMzAgMjJMMzAgMjNMMzEgMjNMMzEgMjRMMzIgMjRMMzIgMjNMMzEgMjNMMzEgMjJaTTM2IDIyTDM2IDIzTDM3IDIzTDM3IDIyWk01IDIzTDUgMjZMOCAyNkw4IDIzWk0yMyAyM0wyMyAyNkwyNiAyNkwyNiAyM1pNMzggMjNMMzggMjRMNDAgMjRMNDAgMjNaTTQxIDIzTDQxIDI2TDQ0IDI2TDQ0IDIzWk02IDI0TDYgMjVMNyAyNUw3IDI0Wk0xOSAyNEwxOSAyNUwxOCAyNUwxOCAyN0wxOSAyN0wxOSAyNUwyMSAyNUwyMSAyNFpNMjQgMjRMMjQgMjVMMjUgMjVMMjUgMjRaTTQyIDI0TDQyIDI1TDQzIDI1TDQzIDI0Wk0zIDI1TDMgMjhMMiAyOEwyIDI5TDEgMjlMMSAzMEwzIDMwTDMgMjlMNCAyOUw0IDMxTDMgMzFMMyAzMkw1IDMyTDUgMjlMNiAyOUw2IDI4TDggMjhMOCAyN0w1IDI3TDUgMjhMNCAyOEw0IDI1Wk0xMCAyNkwxMCAyN0w5IDI3TDkgMjhMMTIgMjhMMTIgMjlMMTMgMjlMMTMgMjhMMTIgMjhMMTIgMjZaTTIwIDI2TDIwIDI3TDIyIDI3TDIyIDI4TDIxIDI4TDIxIDI5TDE5IDI5TDE5IDI4TDE3IDI4TDE3IDI5TDE4IDI5TDE4IDMwTDE3IDMwTDE3IDMyTDE2IDMyTDE2IDMxTDE0IDMxTDE0IDMyTDEyIDMyTDEyIDMxTDEzIDMxTDEzIDMwTDEyIDMwTDEyIDMxTDExIDMxTDExIDMyTDEyIDMyTDEyIDM0TDEzIDM0TDEzIDM3TDE1IDM3TDE1IDM1TDE2IDM1TDE2IDM2TDE5IDM2TDE5IDM1TDIwIDM1TDIwIDM0TDIxIDM0TDIxIDMwTDIyIDMwTDIyIDI4TDIzIDI4TDIzIDI3TDIyIDI3TDIyIDI2Wk0yOSAyNkwyOSAyN0wyOCAyN0wyOCAyOEwyOSAyOEwyOSAyN0wzMCAyN0wzMCAyNlpNMzMgMjZMMzMgMjdMMzQgMjdMMzQgMjZaTTM2IDI3TDM2IDI4TDM3IDI4TDM3IDI5TDM2IDI5TDM2IDMwTDM3IDMwTDM3IDI5TDM5IDI5TDM5IDI4TDM3IDI4TDM3IDI3Wk0xNCAyOEwxNCAzMEwxNSAzMEwxNSAyOUwxNiAyOUwxNiAyOFpNMTggMzBMMTggMzJMMTcgMzJMMTcgMzNMMTggMzNMMTggMzJMMTkgMzJMMTkgMzRMMjAgMzRMMjAgMzBaTTI1IDMwTDI1IDMyTDI2IDMyTDI2IDMwWk0zOCAzMEwzOCAzMUwzOSAzMUwzOSAzMFpNNiAzMUw2IDMyTDcgMzJMNyAzMVpNNDYgMzFMNDYgMzJMNDUgMzJMNDUgMzNMNDQgMzNMNDQgMzRMNDYgMzRMNDYgMzJMNDcgMzJMNDcgMzFaTTE1IDMyTDE1IDMzTDE2IDMzTDE2IDMyWk0xMyAzM0wxMyAzNEwxNCAzNEwxNCAzNUwxNSAzNUwxNSAzNEwxNCAzNEwxNCAzM1pNNSAzNEw1IDM1TDYgMzVMNiAzNkw3IDM2TDcgMzdMNiAzN0w2IDM4TDcgMzhMNyAzN0w4IDM3TDggMzZMNyAzNkw3IDM1TDYgMzVMNiAzNFpNMTYgMzRMMTYgMzVMMTcgMzVMMTcgMzRaTTI4IDM0TDI4IDM1TDMxIDM1TDMxIDM0Wk0zNCAzNEwzNCAzNUwzNSAzNUwzNSAzNFpNNDQgMzVMNDQgMzZMNDYgMzZMNDYgMzVaTTI2IDM2TDI2IDM3TDI3IDM3TDI3IDM2Wk0zIDM3TDMgMzhMNCAzOEw0IDM3Wk0yMiAzN0wyMiAzOEwyMyAzOEwyMyAzN1pNMSAzOEwxIDQwTDAgNDBMMCA0MUwzIDQxTDMgNDBMNCA0MEw0IDM5TDIgMzlMMiAzOFpNMjMgNDFMMjMgNDRMMjYgNDRMMjYgNDFaTTQxIDQxTDQxIDQ0TDQ0IDQ0TDQ0IDQxWk0yNCA0MkwyNCA0M0wyNSA0M0wyNSA0MlpNNDIgNDJMNDIgNDNMNDMgNDNMNDMgNDJaTTQ1IDQyTDQ1IDQzTDQ2IDQzTDQ2IDQyWk0xNCA0NEwxNCA0NUwxNSA0NUwxNSA0NFpNMTYgNDRMMTYgNDVMMTcgNDVMMTcgNDZMMTggNDZMMTggNDVMMTcgNDVMMTcgNDRaTTM4IDQ1TDM4IDQ2TDM5IDQ2TDM5IDQ1Wk00MCA0NUw0MCA0N0w0MSA0N0w0MSA0NVpNNDMgNDVMNDMgNDZMNDQgNDZMNDQgNDVaTTE1IDQ3TDE1IDQ4TDE2IDQ4TDE2IDQ3Wk0wIDBMMCA3TDcgN0w3IDBaTTEgMUwxIDZMNiA2TDYgMVpNMiAyTDIgNUw1IDVMNSAyWk00OSAwTDQyIDBMNDIgN0w0OSA3Wk00OCAxTDQzIDFMNDMgNkw0OCA2Wk00NyAyTDQ0IDJMNDQgNUw0NyA1Wk0wIDQ5TDcgNDlMNyA0MkwwIDQyWk0xIDQ4TDYgNDhMNiA0M0wxIDQzWk0yIDQ3TDUgNDdMNSA0NEwyIDQ0WiIgZmlsbD0iIzAwMDAwMCIvPjwvZz48L2c+PC9zdmc+Cg==";
+var QR_PAGE_SRC = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2ZmZmZmZiIvPjxnIHRyYW5zZm9ybT0ic2NhbGUoNi44OTcpIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLDApIj48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik04IDBMOCAxTDEwIDFMMTAgMFpNMTUgMEwxNSAxTDE0IDFMMTQgMkwxMSAyTDExIDRMMTAgNEwxMCAzTDkgM0w5IDJMOCAyTDggNUw5IDVMOSA2TDggNkw4IDdMOSA3TDkgOEw4IDhMOCA5TDcgOUw3IDhMNiA4TDYgOUw3IDlMNyAxMEw2IDEwTDYgMTFMNCAxMUw0IDEyTDUgMTJMNSAxNEwzIDE0TDMgMTNMMSAxM0wxIDEyTDMgMTJMMyAxMUwxIDExTDEgMTJMMCAxMkwwIDEzTDEgMTNMMSAxNEwzIDE0TDMgMTVMMiAxNUwyIDE2TDEgMTZMMSAxOEwwIDE4TDAgMTlMMSAxOUwxIDE4TDMgMThMMyAxOUwyIDE5TDIgMjBMMSAyMEwxIDIxTDIgMjFMMiAyMEwzIDIwTDMgMTlMNCAxOUw0IDIxTDUgMjFMNSAyMEw2IDIwTDYgMjFMNyAyMUw3IDIwTDkgMjBMOSAyMUw4IDIxTDggMjJMOSAyMkw5IDI0TDEwIDI0TDEwIDIzTDE0IDIzTDE0IDIyTDE1IDIyTDE1IDIxTDE0IDIxTDE0IDIwTDEzIDIwTDEzIDE4TDE0IDE4TDE0IDE3TDEyIDE3TDEyIDE2TDE0IDE2TDE0IDE1TDE1IDE1TDE1IDE2TDE2IDE2TDE2IDE1TDE1IDE1TDE1IDE0TDE3IDE0TDE3IDEzTDE4IDEzTDE4IDEyTDE3IDEyTDE3IDEwTDE4IDEwTDE4IDExTDE5IDExTDE5IDE2TDE4IDE2TDE4IDE3TDE3IDE3TDE3IDIxTDE2IDIxTDE2IDIyTDE4IDIyTDE4IDI0TDE3IDI0TDE3IDIzTDE2IDIzTDE2IDI0TDE0IDI0TDE0IDI2TDEzIDI2TDEzIDI0TDEyIDI0TDEyIDI1TDExIDI1TDExIDI2TDEwIDI2TDEwIDI1TDggMjVMOCAyOUw5IDI5TDkgMjhMMTAgMjhMMTAgMjlMMTEgMjlMMTEgMjhMMTIgMjhMMTIgMjlMMTMgMjlMMTMgMjhMMTIgMjhMMTIgMjZMMTMgMjZMMTMgMjdMMTQgMjdMMTQgMjlMMTYgMjlMMTYgMjhMMTcgMjhMMTcgMjdMMTggMjdMMTggMjlMMjIgMjlMMjIgMjhMMjMgMjhMMjMgMjlMMjYgMjlMMjYgMjdMMjcgMjdMMjcgMjlMMjggMjlMMjggMjdMMjkgMjdMMjkgMjVMMjggMjVMMjggMjJMMjkgMjJMMjkgMjFMMjcgMjFMMjcgMThMMjggMThMMjggMTVMMjkgMTVMMjkgMTNMMjcgMTNMMjcgMTJMMjUgMTJMMjUgOUwyNyA5TDI3IDhMMjQgOEwyNCA5TDIyIDlMMjIgOEwxOSA4TDE5IDlMMTggOUwxOCA3TDE5IDdMMTkgNkwyMCA2TDIwIDdMMjEgN0wyMSA2TDIwIDZMMjAgMkwyMSAyTDIxIDBMMTkgMEwxOSAxTDE3IDFMMTcgMFpNMTYgMUwxNiAzTDEyIDNMMTIgNUwxMCA1TDEwIDZMOSA2TDkgN0wxMCA3TDEwIDhMOSA4TDkgOUw4IDlMOCAxMEw5IDEwTDkgMTJMMTAgMTJMMTAgMTNMOSAxM0w5IDE1TDEwIDE1TDEwIDEzTDExIDEzTDExIDExTDE0IDExTDE0IDEwTDE1IDEwTDE1IDEyTDEyIDEyTDEyIDE0TDExIDE0TDExIDE2TDEyIDE2TDEyIDE0TDEzIDE0TDEzIDE1TDE0IDE1TDE0IDE0TDE1IDE0TDE1IDEzTDE2IDEzTDE2IDEwTDE3IDEwTDE3IDlMMTMgOUwxMyA3TDE0IDdMMTQgNUwxNSA1TDE1IDdMMTYgN0wxNiA2TDE3IDZMMTcgN0wxOCA3TDE4IDZMMTkgNkwxOSAzTDE4IDNMMTggMkwxNyAyTDE3IDFaTTE5IDFMMTkgMkwyMCAyTDIwIDFaTTE3IDNMMTcgNkwxOCA2TDE4IDNaTTEzIDRMMTMgNUwxMiA1TDEyIDdMMTEgN0wxMSA2TDEwIDZMMTAgN0wxMSA3TDExIDhMMTIgOEwxMiA3TDEzIDdMMTMgNUwxNCA1TDE0IDRaTTAgOEwwIDEwTDIgMTBMMiA5TDQgOUw0IDEwTDUgMTBMNSA5TDQgOUw0IDhaTTI4IDhMMjggMTBMMjYgMTBMMjYgMTFMMjggMTFMMjggMTJMMjkgMTJMMjkgMTFMMjggMTFMMjggMTBMMjkgMTBMMjkgOFpNOSA5TDkgMTBMMTAgMTBMMTAgOVpNMTkgMTBMMTkgMTFMMjAgMTFMMjAgMTRMMjEgMTRMMjEgMTZMMjIgMTZMMjIgMTdMMjEgMTdMMjEgMThMMjAgMThMMjAgMTZMMTkgMTZMMTkgMTdMMTggMTdMMTggMTlMMjAgMTlMMjAgMjBMMTggMjBMMTggMjFMMTkgMjFMMTkgMjJMMjAgMjJMMjAgMjBMMjEgMjBMMjEgMTlMMjIgMTlMMjIgMjBMMjQgMjBMMjQgMTlMMjUgMTlMMjUgMjBMMjYgMjBMMjYgMThMMjUgMThMMjUgMTdMMjQgMTdMMjQgMTlMMjIgMTlMMjIgMThMMjMgMThMMjMgMTZMMjYgMTZMMjYgMTdMMjcgMTdMMjcgMTVMMjYgMTVMMjYgMTNMMjUgMTNMMjUgMTJMMjMgMTJMMjMgMTFMMjQgMTFMMjQgMTBMMjIgMTBMMjIgMTJMMjEgMTJMMjEgMTBaTTYgMTFMNiAxMkw3IDEyTDcgMTNMNiAxM0w2IDE0TDUgMTRMNSAxNUwzIDE1TDMgMTZMMiAxNkwyIDE3TDMgMTdMMyAxOEw0IDE4TDQgMTdMNSAxN0w1IDE1TDYgMTVMNiAxNkw3IDE2TDcgMTVMOCAxNUw4IDExWk0xMyAxM0wxMyAxNEwxNCAxNEwxNCAxM1pNMjIgMTNMMjIgMTVMMjUgMTVMMjUgMTRMMjMgMTRMMjMgMTNaTTYgMTRMNiAxNUw3IDE1TDcgMTRaTTMgMTZMMyAxN0w0IDE3TDQgMTZaTTkgMTZMOSAxN0wxMCAxN0wxMCAxOEwxMiAxOEwxMiAxN0wxMCAxN0wxMCAxNlpNNiAxN0w2IDE4TDUgMThMNSAxOUw2IDE5TDYgMjBMNyAyMEw3IDE5TDYgMTlMNiAxOEw3IDE4TDcgMTdaTTE1IDE3TDE1IDE5TDE2IDE5TDE2IDE3Wk04IDE4TDggMTlMOSAxOUw5IDIwTDEwIDIwTDEwIDIxTDkgMjFMOSAyMkwxMCAyMkwxMCAyMUwxMSAyMUwxMSAyMkwxMiAyMkwxMiAyMUwxMSAyMUwxMSAyMEwxMiAyMEwxMiAxOUw5IDE5TDkgMThaTTIxIDIxTDIxIDI0TDI0IDI0TDI0IDIxWk0yMiAyMkwyMiAyM0wyMyAyM0wyMyAyMlpNMjYgMjJMMjYgMjRMMjUgMjRMMjUgMjVMMjYgMjVMMjYgMjZMMjQgMjZMMjQgMjdMMjYgMjdMMjYgMjZMMjcgMjZMMjcgMjdMMjggMjdMMjggMjVMMjYgMjVMMjYgMjRMMjcgMjRMMjcgMjJaTTE4IDI0TDE4IDI2TDE5IDI2TDE5IDI1TDIwIDI1TDIwIDI0Wk0yMiAyNUwyMiAyNkwyMCAyNkwyMCAyN0wxOSAyN0wxOSAyOEwyMCAyOEwyMCAyN0wyMSAyN0wyMSAyOEwyMiAyOEwyMiAyN0wyMyAyN0wyMyAyNVpNOSAyNkw5IDI3TDEwIDI3TDEwIDI4TDExIDI4TDExIDI3TDEwIDI3TDEwIDI2Wk0xNCAyNkwxNCAyN0wxNSAyN0wxNSAyOEwxNiAyOEwxNiAyN0wxNyAyN0wxNyAyNlpNMCAwTDAgN0w3IDdMNyAwWk0xIDFMMSA2TDYgNkw2IDFaTTIgMkwyIDVMNSA1TDUgMlpNMjkgMEwyMiAwTDIyIDdMMjkgN1pNMjggMUwyMyAxTDIzIDZMMjggNlpNMjcgMkwyNCAyTDI0IDVMMjcgNVpNMCAyOUw3IDI5TDcgMjJMMCAyMlpNMSAyOEw2IDI4TDYgMjNMMSAyM1pNMiAyN0w1IDI3TDUgMjRMMiAyNFoiIGZpbGw9IiMwMDAwMDAiLz48L2c+PC9nPjwvc3ZnPgo=";
 var DEEPLINK = "https://bank.gov.ua/qr/QkNECjAwMgoyClVDVAoK1M7PINHu8O714O0gzODwJ__t4CDe8LO_4u3gClVBNzQzMDUyOTkwMDAwMDI2MDA1MDQ2ODAyODUxClVBSDQ1Ni4wMAozMTYyNzI1NTYwCgoKzu_r4PLgIOfg7O7i6-Xt7f8guTQ1Njc4Cg";
-var PAGE_URL = "https://yokogamma.github.io/foppay/";
 var IBAN = "UA743052990000026005046802851";
 var EDRPOU = "3162725560";
 var RECIPIENT = "ФОП Сорохан Мар'яна Юріївна";
 var AMOUNT = "456 грн";
 var PURPOSE = "Оплата замовлення №45678";
 
-// ═══ OS Detection ═══
 var ua = navigator.userAgent;
-var isAndroid = /android/i.test(ua);
 var isIOS = /iphone|ipad|ipod/i.test(ua);
-var isDesktop = !isAndroid && !isIOS;
 
-// ═══ Bank configs ═══
 var BANKS_ANDROID = [
   { name:'ПриватБанк', cls:'privat', letter:'P', pkg:'ua.privatbank.ap24' },
   { name:'monobank',   cls:'mono',   letter:'m', pkg:'com.ftband.mono' },
-  { name:'Ощадбанк',   cls:'oschad', letter:'О', pkg:'ua.oschadbank.online' },
-  { name:'Raiffeisen',  cls:'raiff',  letter:'R', pkg:'ua.raiffeisen.myraif' },
+  { name:'Ощадбанк',   cls:'oschad', letter:'О', pkg:'ua.oschadbank.flumo' },
+  { name:'Raiffeisen', cls:'raiff',  letter:'R', pkg:'ua.raiffeisen.myraif' },
   { name:'àбанк',      cls:'abank',  letter:'à', pkg:'ua.com.abank' },
   { name:'ПУМБ',       cls:'pumb',   letter:'П', pkg:'com.fuib.android.spot.online' },
   { name:'UKRSIB',     cls:'ukrsib', letter:'U', pkg:'com.ukrsibbank.uso.android' },
@@ -457,131 +471,146 @@ var BANKS_IOS = [
   { name:'ПриватБанк', cls:'privat', letter:'P', scheme:'privat24' }
 ];
 
-// ═══ Init ═══
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
+  setupQrImages();
   setupBanks();
   setupTabs();
-  setupQR();
+  setupCopyButtons();
+  setupAccordion();
+  setupFullscreen();
 });
+
+function setupQrImages() {
+  document.querySelectorAll('[data-qr="payment"]').forEach(function (image) {
+    image.src = QR_PAYMENT_SRC;
+  });
+  var pageQr = document.querySelector('[data-qr="page"]');
+  if (pageQr) pageQr.src = QR_PAGE_SRC;
+}
 
 function setupBanks() {
   var grid = document.getElementById('banksGrid');
   var otherLink = document.getElementById('otherBankLink');
-  var path = DEEPLINK.replace('https://','');
+  if (!grid || !otherLink) return;
+  var path = DEEPLINK.replace('https://', '');
+  var list = isIOS ? BANKS_IOS : BANKS_ANDROID;
 
-  if (isIOS) {
-    // Match ibanoplata for banks with known iOS URL schemes.
-    grid.innerHTML = BANKS_IOS.map(function(b) {
-      var iosUrl = b.scheme ? DEEPLINK.replace('https://', b.scheme + '://') : DEEPLINK;
-      return '<a class="bank-btn ' + b.cls + '" href="' + iosUrl + '">' +
-        '<span class="icon">' + b.letter + '</span>' + b.name + '</a>';
-    }).join('');
-    otherLink.href = DEEPLINK;
-    otherLink.textContent = 'Інший банк →';
-    // Terminal tab visible on iOS too
-  } else {
-    // Android (and fallback): 8 bank buttons with intent://
-    grid.innerHTML = BANKS_ANDROID.map(function(b) {
-      var intentUrl = 'intent://' + path + '#Intent;scheme=https;package=' + b.pkg +
-        ';S.browser_fallback_url=https://play.google.com/store/apps/details?id=' + b.pkg + ';end';
-      return '<a class="bank-btn ' + b.cls + '" href="' + intentUrl + '">' +
-        '<span class="icon">' + b.letter + '</span>' + b.name + '</a>';
-    }).join('');
-    otherLink.href = DEEPLINK;
-  }
+  grid.innerHTML = list.map(function (bank) {
+    var href = isIOS
+      ? DEEPLINK.replace('https://', bank.scheme + '://')
+      : 'intent://' + path + '#Intent;scheme=https;package=' + bank.pkg +
+        ';S.browser_fallback_url=https://play.google.com/store/apps/details?id=' + bank.pkg + ';end';
+    return '<a class="bank-btn ' + bank.cls + '" href="' + href + '">' +
+      '<span class="icon">' + bank.letter + '</span>' + bank.name + '</a>';
+  }).join('');
+  otherLink.href = DEEPLINK;
 }
 
 function setupTabs() {
   var tabs = document.querySelectorAll('#mobileTabs .tab');
-  tabs.forEach(function(tab) {
-    tab.addEventListener('click', function() {
-      var target = this.dataset.tab;
-      tabs.forEach(function(t) { t.classList.remove('active'); });
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      tabs.forEach(function (item) { item.classList.remove('active'); });
       this.classList.add('active');
-      document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
-      document.getElementById('tab-' + target).classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(function (content) { content.classList.remove('active'); });
+      var target = document.getElementById('tab-' + this.dataset.tab);
+      if (target) target.classList.add('active');
     });
   });
 }
 
-function setupQR() {
-  // Mobile QR (deeplink НБУ — for scanning from bank app)
-  if (document.getElementById('qrcode')) {
-    new QRCode(document.getElementById('qrcode'), {
-      text: DEEPLINK, width: 180, height: 180,
-      colorDark: '#1a1a2e', colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.M
+function setupCopyButtons() {
+  document.querySelectorAll('[data-action]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var text = '';
+      var message = 'Скопійовано';
+
+      switch (button.dataset.action) {
+        case 'copy_link': text = DEEPLINK; message = 'Посилання скопійовано'; break;
+        case 'copy_iban': text = IBAN; message = 'IBAN скопійовано'; break;
+        case 'copy_edrpou': text = EDRPOU; message = 'ЄДРПОУ скопійовано'; break;
+        case 'copy_name': text = RECIPIENT; break;
+        case 'copy_amount': text = AMOUNT; break;
+        case 'copy_purpose': text = PURPOSE; break;
+        case 'copy_all':
+          text = 'Отримувач: ' + RECIPIENT + '\nIBAN: ' + IBAN + '\nЄДРПОУ: ' + EDRPOU +
+            '\nСума: ' + AMOUNT + '\nПризначення: ' + PURPOSE;
+          message = 'Всі реквізити скопійовано';
+          break;
+        default: return;
+      }
+
+      copyText(text, message);
+      if (button.classList.contains('desktop-copy-btn')) {
+        var original = button.textContent;
+        button.classList.add('copied');
+        button.textContent = '✅';
+        setTimeout(function () {
+          button.classList.remove('copied');
+          button.textContent = original;
+        }, 1500);
+      }
     });
-  }
-  // Desktop QR 1: Our page (camera scan → choose bank)
-  if (document.getElementById('qrcode-page')) {
-    new QRCode(document.getElementById('qrcode-page'), {
-      text: PAGE_URL, width: 200, height: 200,
-      colorDark: '#1a1a2e', colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.M
-    });
-  }
-  // Desktop QR 2: NBU deeplink (bank app scan → auto-fill)
-  if (document.getElementById('qrcode-nbu')) {
-    new QRCode(document.getElementById('qrcode-nbu'), {
-      text: DEEPLINK, width: 150, height: 150,
-      colorDark: '#1a1a2e', colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.M
-    });
-  }
+  });
 }
 
-function dCopy(btn, text) {
-  copyText(text, 'Скопійовано');
-  btn.classList.add('copied');
-  btn.textContent = '✅';
-  setTimeout(function() { btn.classList.remove('copied'); btn.textContent = '📋'; }, 1500);
+function setupAccordion() {
+  document.querySelectorAll('.acc-header').forEach(function (header) {
+    header.addEventListener('click', function () {
+      var item = header.parentElement;
+      var wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.acc-item').forEach(function (element) { element.classList.remove('open'); });
+      if (!wasOpen) item.classList.add('open');
+    });
+  });
 }
 
-// ═══ Accordion ═══
-function toggleAcc(header) {
-  var item = header.parentElement;
-  var wasOpen = item.classList.contains('open');
-  document.querySelectorAll('.acc-item').forEach(function(el) { el.classList.remove('open'); });
-  if (!wasOpen) item.classList.add('open');
-}
-
-// ═══ Fullscreen ═══
 var wakeLock = null;
-function openFullscreen() {
-  document.getElementById('fsOverlay').classList.add('show');
-  document.body.style.overflow = 'hidden';
-  if ('wakeLock' in navigator) {
-    navigator.wakeLock.request('screen').then(function(wl) { wakeLock = wl; }).catch(function(){});
+function setupFullscreen() {
+  var openButton = document.querySelector('[data-action="fullscreen_open"]');
+  var closeButton = document.querySelector('[data-action="fullscreen_close"]');
+  var overlay = document.getElementById('fsOverlay');
+
+  if (openButton && overlay) {
+    openButton.addEventListener('click', function () {
+      overlay.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      if ('wakeLock' in navigator) {
+        navigator.wakeLock.request('screen').then(function (lock) { wakeLock = lock; }).catch(function () {});
+      }
+    });
+  }
+
+  if (closeButton && overlay) {
+    closeButton.addEventListener('click', function () {
+      overlay.classList.remove('show');
+      document.body.style.overflow = '';
+      if (wakeLock) {
+        wakeLock.release().catch(function () {});
+        wakeLock = null;
+      }
+    });
   }
 }
-function closeFullscreen() {
-  document.getElementById('fsOverlay').classList.remove('show');
-  document.body.style.overflow = '';
-  if (wakeLock) { wakeLock.release(); wakeLock = null; }
-}
 
-// ═══ Copy ═══
 function copyText(text, msg) {
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(function() { showToast(msg); });
+    navigator.clipboard.writeText(text).then(function () { showToast(msg); });
   } else {
     var ta = document.createElement('textarea');
     ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
-    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
-    document.body.removeChild(ta); showToast(msg);
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (error) {}
+    document.body.removeChild(ta);
+    showToast(msg);
   }
-}
-
-function copyAll() {
-  var text = 'Отримувач: ' + RECIPIENT + '\nIBAN: ' + IBAN + '\nЄДРПОУ: ' + EDRPOU + '\nСума: ' + AMOUNT + '\nПризначення: ' + PURPOSE;
-  copyText(text, 'Всі реквізити скопійовано!');
 }
 
 function showToast(msg) {
   var t = document.getElementById('toast');
+  if (!t) return;
   t.textContent = msg; t.classList.add('show');
-  setTimeout(function() { t.classList.remove('show'); }, 2000);
+  setTimeout(function () { t.classList.remove('show'); }, 2000);
 }
 </script>
 </body>
