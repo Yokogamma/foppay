@@ -536,7 +536,7 @@ var BANKS = [
   { code:'raiffeisen', name:'Raiffeisen', cls:'raiff', letter:'R', ios:{ type:'scheme', prefix:'myraif://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.raiffeisen.myraif' } },
   { code:'abank', name:'А-Банк', cls:'abank', letter:'A', ios:{ type:'scheme', prefix:'abank24://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.com.abank' } },
   { code:'sense', name:'Sense', cls:'sense', letter:'S', ios:{ type:'nbu', payload:'legacy' }, android:{ type:'intent', pkg:'ua.alfabank.mobile.android', payload:'legacy' } },
-  { code:'oschad', name:'Ощадбанк', cls:'oschad', letter:'О', ios:{ type:'qr' }, android:{ type:'intent', pkg:'ua.oschadbank.flumo' } },
+  { code:'oschad', name:'Ощадбанк', cls:'oschad', letter:'О', ios:{ type:'qr' }, android:{ type:'universal', prefix:'https://mobile.oschadbank.ua/images/deeplinks/flumo/' } },
   { code:'privat-business', name:'ПриватБізнес', cls:'privat-business', letter:'PB', ios:{ type:'scheme', prefix:'p24business://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.privatbank.cb' } },
   { code:'ecobank', name:'ЕКОбанк', cls:'ecobank', letter:'E', ios:{ type:'scheme', prefix:'ecobank://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.ugb.app' } },
   { code:'otp', name:'OTP Bank', cls:'otp', letter:'O', ios:{ type:'scheme', prefix:'otpbankua://payment/qr/' }, android:{ type:'intent', pkg:'ua.otpbank.android' } },
