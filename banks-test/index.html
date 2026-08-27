@@ -542,7 +542,9 @@ var BANKS = [
   { code:'pumb', name:'ПУМБ', cls:'pumb', letter:'П', icon:'bank-icons/pumb.webp', ios:{ type:'universal', prefix:'https://mobile-app.pumb.ua/bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.fuib.android.spot.online' } },
   { code:'raiffeisen', name:'Raiffeisen', cls:'raiff', letter:'R', icon:'bank-icons/raif.webp', ios:{ type:'scheme', prefix:'myraif://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.raiffeisen.myraif' } },
   { code:'abank', name:'А-Банк', cls:'abank', letter:'A', icon:'bank-icons/abank.webp', ios:{ type:'scheme', prefix:'abank24://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.com.abank' } },
-  { code:'sense', name:'Sense', cls:'sense', letter:'S', icon:'bank-icons/sense.webp', ios:{ type:'nbu', payload:'legacy' }, android:{ type:'intent', pkg:'ua.alfabank.mobile.android', payload:'legacy' } },
+  // Sense is registered for bank.gov.ua/qr/* and opens the verified NBU App Link directly.
+  // Do not force an Android package intent here: it broke a previously working on-device route.
+  { code:'sense', name:'Sense', cls:'sense', letter:'S', icon:'bank-icons/sense.webp', ios:{ type:'nbu', payload:'legacy' }, android:{ type:'nbu', payload:'legacy' } },
   /*
    * Oschad retail app is NOT in NBU's bank.gov.ua assetlinks.json, so an
    * intent against bank.gov.ua/qr can never resolve there (falls to Play
