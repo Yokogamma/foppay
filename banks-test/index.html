@@ -286,7 +286,7 @@
       <div class="banks-grid" id="banksGrid">
         <!-- Filled by JS based on OS -->
       </div>
-      <div class="banks-note">Тестові інтеграції: 14 додаткових Android-застосунків додано за переліком Pay24, package ID звірено з Google Play. Відкриття та заповнення реквізитів потребують перевірки на телефоні. Ощад не підтримує deeplink НБУ (bank.gov.ua). Android-застосунок верифікує лише <b>online.oschadbank.ua</b> (перевірено в налаштуваннях застосунку) — тестуємо через цей хост: A) intent з payload, B) прямий https app-link, C) intent на корінь домену. Перевіряйте окремо у Chrome та у вбудованому браузері Telegram.</div>
+      <div class="banks-note">Тестові інтеграції: 14 додаткових Android-застосунків додано за переліком Pay24, package ID звірено з Google Play. Відкриття та заповнення реквізитів потребують перевірки на телефоні. Ощад: підтверджено робочий запуск застосунку через intent на верифікований хост <b>online.oschadbank.ua</b>. Deeplink НБУ банк не підтримує, тому реквізити не підставляються — оплата за скопійованим IBAN або через QR усередині застосунку.</div>
       <a class="other-bank-link" id="otherBankLink" href="#">Інший банк →</a>
     </div>
   </div>
@@ -537,18 +537,15 @@ var BANKS = [
   { code:'abank', name:'А-Банк', cls:'abank', letter:'A', ios:{ type:'scheme', prefix:'abank24://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.com.abank' } },
   { code:'sense', name:'Sense', cls:'sense', letter:'S', ios:{ type:'nbu', payload:'legacy' }, android:{ type:'intent', pkg:'ua.alfabank.mobile.android', payload:'legacy' } },
   /*
-   * Oschad retail app is NOT in NBU's bank.gov.ua assetlinks.json, so the old
-   * intent against bank.gov.ua/qr never resolved and Chrome fell back to Play
-   * Store. On-device check (app settings → supported web addresses) shows the
-   * ANDROID app verifies exactly one host: online.oschadbank.ua (the
-   * mobile.oschadbank.ua route from the iOS AASA is not declared on Android).
-   * Candidates: A — intent via online host + AASA path with payload,
-   * B — plain https app link, C — intent to the bare host root (probes
-   * whether the filter is host-wide or path-restricted).
+   * Oschad retail app is NOT in NBU's bank.gov.ua assetlinks.json, so an
+   * intent against bank.gov.ua/qr can never resolve there (falls to Play
+   * Store). CONFIRMED on-device 2026-08-27: the Android app verifies the
+   * online.oschadbank.ua host, and both the intent below and the plain https
+   * app link open the app. Intent form preferred — it also works in
+   * messenger in-app browsers and degrades to Play Store when the app is
+   * missing. The app ignores the NBU payload (no requisites autofill).
    */
-  { code:'oschad', name:'Ощад A intent', cls:'oschad', letter:'О', ios:{ type:'universal', prefix:'https://online.oschadbank.ua/images/deeplinks/flumo/' }, android:{ type:'intent', pkg:'ua.oschadbank.flumo', applink:'online.oschadbank.ua/images/deeplinks/flumo/' } },
-  { code:'oschad-b', name:'Ощад B https', cls:'oschad', letter:'О', ios:{ type:'qr' }, android:{ type:'universal', prefix:'https://online.oschadbank.ua/images/deeplinks/flumo/' } },
-  { code:'oschad-c', name:'Ощад C root', cls:'oschad', letter:'О', ios:null, android:{ type:'intent', pkg:'ua.oschadbank.flumo', applink:'online.oschadbank.ua/', omitPayload:true } },
+  { code:'oschad', name:'Ощадбанк', cls:'oschad', letter:'О', ios:{ type:'universal', prefix:'https://online.oschadbank.ua/images/deeplinks/flumo/' }, android:{ type:'intent', pkg:'ua.oschadbank.flumo', applink:'online.oschadbank.ua/images/deeplinks/flumo/' } },
   { code:'privat-business', name:'ПриватБізнес', cls:'privat-business', letter:'PB', ios:{ type:'scheme', prefix:'p24business://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.privatbank.cb' } },
   { code:'ecobank', name:'ЕКОбанк', cls:'ecobank', letter:'E', ios:{ type:'scheme', prefix:'ecobank://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.ugb.app' } },
   { code:'otp', name:'OTP Bank', cls:'otp', letter:'O', ios:{ type:'scheme', prefix:'otpbankua://payment/qr/' }, android:{ type:'intent', pkg:'ua.otpbank.android' } },
