@@ -286,7 +286,7 @@
       <div class="banks-grid" id="banksGrid">
         <!-- Filled by JS based on OS -->
       </div>
-      <div class="banks-note">Тестові інтеграції: 14 додаткових Android-застосунків додано за переліком Pay24, package ID звірено з Google Play. Відкриття та заповнення реквізитів потребують перевірки на телефоні. Для Ощаду залишено Android intent: на перевіреному телефоні він переходить у Google Play з кнопкою «Відкрити».</div>
+      <div class="banks-note">Тестові інтеграції: 14 додаткових Android-застосунків додано за переліком Pay24, package ID звірено з Google Play. Відкриття та заповнення реквізитів потребують перевірки на телефоні. Ощад не підтримує deeplink НБУ (bank.gov.ua), тому старий intent падав у Google Play. Знайдено офіційний app-link маршрут <b>mobile.oschadbank.ua/images/deeplinks/flumo/*</b> — тестуємо: A) intent через app-link, B) прямий https app-link, C) intent без payload. Перевіряйте окремо у Chrome та у вбудованому браузері Telegram.</div>
       <a class="other-bank-link" id="otherBankLink" href="#">Інший банк →</a>
     </div>
   </div>
@@ -536,7 +536,16 @@ var BANKS = [
   { code:'raiffeisen', name:'Raiffeisen', cls:'raiff', letter:'R', ios:{ type:'scheme', prefix:'myraif://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.raiffeisen.myraif' } },
   { code:'abank', name:'А-Банк', cls:'abank', letter:'A', ios:{ type:'scheme', prefix:'abank24://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.com.abank' } },
   { code:'sense', name:'Sense', cls:'sense', letter:'S', ios:{ type:'nbu', payload:'legacy' }, android:{ type:'intent', pkg:'ua.alfabank.mobile.android', payload:'legacy' } },
-  { code:'oschad', name:'Ощадбанк', cls:'oschad', letter:'О', ios:{ type:'qr' }, android:{ type:'intent', pkg:'ua.oschadbank.flumo' } },
+  /*
+   * Oschad retail app is NOT in NBU's bank.gov.ua assetlinks.json, so the old
+   * intent against bank.gov.ua/qr never resolved and Chrome fell back to Play
+   * Store. The app's only verified deep-link route (per assetlinks.json and
+   * apple-app-site-association on mobile/online.oschadbank.ua) is
+   * /images/deeplinks/flumo/* — candidates A/B/C below target it.
+   */
+  { code:'oschad', name:'Ощад A intent', cls:'oschad', letter:'О', ios:{ type:'universal', prefix:'https://mobile.oschadbank.ua/images/deeplinks/flumo/' }, android:{ type:'intent', pkg:'ua.oschadbank.flumo', applink:'mobile.oschadbank.ua/images/deeplinks/flumo/' } },
+  { code:'oschad-b', name:'Ощад B https', cls:'oschad', letter:'О', ios:{ type:'qr' }, android:{ type:'universal', prefix:'https://mobile.oschadbank.ua/images/deeplinks/flumo/' } },
+  { code:'oschad-c', name:'Ощад C bare', cls:'oschad', letter:'О', ios:null, android:{ type:'intent', pkg:'ua.oschadbank.flumo', applink:'mobile.oschadbank.ua/images/deeplinks/flumo/', omitPayload:true } },
   { code:'privat-business', name:'ПриватБізнес', cls:'privat-business', letter:'PB', ios:{ type:'scheme', prefix:'p24business://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.privatbank.cb' } },
   { code:'ecobank', name:'ЕКОбанк', cls:'ecobank', letter:'E', ios:{ type:'scheme', prefix:'ecobank://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.ugb.app' } },
   { code:'otp', name:'OTP Bank', cls:'otp', letter:'O', ios:{ type:'scheme', prefix:'otpbankua://payment/qr/' }, android:{ type:'intent', pkg:'ua.otpbank.android' } },
@@ -633,7 +642,9 @@ function buildBankUrl(launch) {
   if (!launch || launch.type === 'qr') return '#tab-qr';
   if (launch.type === 'nbu') return deeplink;
   if (launch.type === 'intent') {
-    var path = deeplink.replace('https://', '');
+    var path = launch.applink
+      ? launch.applink + (launch.omitPayload ? '' : payload)
+      : deeplink.replace('https://', '');
     return 'intent://' + path + '#Intent;scheme=https;package=' + launch.pkg + ';end';
   }
   return launch.prefix + payload;
