@@ -508,7 +508,8 @@ var PAYMENT_PAYLOAD = DEEPLINK.slice(NBU_PREFIX.length);
 /*
  * Direct-launch registry for the public test page. "scheme" and "universal"
  * entries are candidates observed in production and still require a real-app
- * check. "intent" keeps an explicit Play Store fallback on Android.
+ * check. Android intents never force Play Store: an unsuccessful launch is
+ * handled by the delayed QR/NBU fallback below.
  */
 var BANKS = [
   { code:'privat', name:'ПриватБанк', cls:'privat', letter:'P', ios:{ type:'scheme', prefix:'privat24://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.privatbank.ap24' } },
@@ -516,12 +517,12 @@ var BANKS = [
   { code:'pumb', name:'ПУМБ', cls:'pumb', letter:'П', ios:{ type:'universal', prefix:'https://mobile-app.pumb.ua/bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.fuib.android.spot.online' } },
   { code:'raiffeisen', name:'Raiffeisen', cls:'raiff', letter:'R', ios:{ type:'scheme', prefix:'myraif://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.raiffeisen.myraif' } },
   { code:'abank', name:'А-Банк', cls:'abank', letter:'A', ios:{ type:'scheme', prefix:'abank24://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.com.abank' } },
-  { code:'sense', name:'Sense', cls:'sense', letter:'S', ios:{ type:'nbu', payload:'legacy' }, android:{ type:'nbu', payload:'legacy' } },
-  { code:'oschad', name:'Ощадбанк', cls:'oschad', letter:'О', ios:{ type:'qr' }, android:{ type:'qr' } },
-  { code:'privat-business', name:'ПриватБізнес', cls:'privat-business', letter:'PB', ios:{ type:'scheme', prefix:'p24business://bank.gov.ua/qr/' }, android:{ type:'scheme', prefix:'p24business://bank.gov.ua/qr/' } },
-  { code:'ecobank', name:'ЕКОбанк', cls:'ecobank', letter:'E', ios:{ type:'scheme', prefix:'ecobank://bank.gov.ua/qr/' }, android:{ type:'scheme', prefix:'ecobank://bank.gov.ua/qr/' } },
-  { code:'otp', name:'OTP Bank', cls:'otp', letter:'O', ios:{ type:'scheme', prefix:'otpbankua://bank.gov.ua/qr/' }, android:{ type:'scheme', prefix:'otpbankua://bank.gov.ua/qr/' } },
-  { code:'vst', name:'VST Bank', cls:'vst', letter:'V', ios:{ type:'scheme', prefix:'vostok://bank.gov.ua/qr/' }, android:{ type:'scheme', prefix:'vostok://bank.gov.ua/qr/' } },
+  { code:'sense', name:'Sense', cls:'sense', letter:'S', ios:{ type:'nbu', payload:'legacy' }, android:{ type:'intent', pkg:'ua.alfabank.mobile.android', payload:'legacy' } },
+  { code:'oschad', name:'Ощадбанк', cls:'oschad', letter:'О', ios:{ type:'qr' }, android:{ type:'intent', pkg:'ua.oschadbank.flumo' } },
+  { code:'privat-business', name:'ПриватБізнес', cls:'privat-business', letter:'PB', ios:{ type:'scheme', prefix:'p24business://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.privatbank.cb' } },
+  { code:'ecobank', name:'ЕКОбанк', cls:'ecobank', letter:'E', ios:{ type:'scheme', prefix:'ecobank://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.ugb.app' } },
+  { code:'otp', name:'OTP Bank', cls:'otp', letter:'O', ios:{ type:'scheme', prefix:'otpbankua://payment/qr/' }, android:{ type:'intent', pkg:'ua.otpbank.android' } },
+  { code:'vst', name:'VST Bank', cls:'vst', letter:'V', ios:{ type:'scheme', prefix:'vostok://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.vostok.bv' } },
   { code:'credit-agricole', name:'Credit Agricole', cls:'credit-agricole', letter:'CA', ios:{ type:'universal', prefix:'https://caplusapp.credit-agricole.ua/qr/' }, android:{ type:'universal', prefix:'https://caplusapp.credit-agricole.ua/qr/' } },
   { code:'ukrsib', name:'UKRSIB', cls:'ukrsib', letter:'U', ios:{ type:'scheme', prefix:'com.ukrsibbank.ukrsibonline.new://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.ukrsibbank.uso.android' } }
 ];
@@ -563,6 +564,8 @@ function setupBanks() {
       var bank = BANKS.find(function (item) { return item.code === button.dataset.bankCode; });
       var launch = isIOS ? bank.ios : bank.android;
       if (isDryRun) event.preventDefault();
+      cancelFallbackTimer();
+      pendingBank = null;
       logDebug('bank_click', bank, launch, button.href);
 
       if (launch.type === 'qr') {
@@ -572,7 +575,7 @@ function setupBanks() {
         return;
       }
 
-      showFallback(bank);
+      scheduleFallback(bank);
     });
   });
 
@@ -589,12 +592,34 @@ function buildBankUrl(launch) {
   if (launch.type === 'nbu') return deeplink;
   if (launch.type === 'intent') {
     var path = deeplink.replace('https://', '');
-    var storeUrl = 'https://play.google.com/store/apps/details?id=' + launch.pkg;
-    return 'intent://' + path + '#Intent;scheme=https;package=' + launch.pkg +
-      ';S.browser_fallback_url=' + encodeURIComponent(storeUrl) + ';end';
+    return 'intent://' + path + '#Intent;scheme=https;package=' + launch.pkg + ';end';
   }
   return launch.prefix + payload;
 }
+
+var launchFallbackTimer = null;
+var pendingBank = null;
+
+function scheduleFallback(bank) {
+  cancelFallbackTimer();
+  pendingBank = bank;
+  launchFallbackTimer = setTimeout(function () {
+    launchFallbackTimer = null;
+    showFallback(bank);
+  }, 4500);
+}
+
+function cancelFallbackTimer() {
+  if (launchFallbackTimer) clearTimeout(launchFallbackTimer);
+  launchFallbackTimer = null;
+}
+
+document.addEventListener('visibilitychange', function () {
+  if (!document.hidden || !pendingBank) return;
+  logDebug('app_opened_or_backgrounded', pendingBank, { type:'visibilitychange' }, null);
+  cancelFallbackTimer();
+  pendingBank = null;
+});
 
 function showFallback(bank) {
   var fallback = document.getElementById('launchFallback');
@@ -602,6 +627,7 @@ function showFallback(bank) {
   if (!fallback || !title) return;
   title.textContent = 'Не відкрився ' + bank.name + '?';
   fallback.classList.add('show');
+  pendingBank = null;
 }
 
 function setupFallback() {
