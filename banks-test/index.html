@@ -86,6 +86,10 @@
   .bank-btn.otp .icon { background:#4cae3e; }
   .bank-btn.vst .icon { background:#164194; }
   .bank-btn.credit-agricole .icon { background:#167247; }
+  .bank-btn.kredo .icon { background:#005baa; }
+  .bank-btn.izi .icon { background:#5147ff; }
+  .bank-btn.credit-dnipro .icon { background:#0057b8; }
+  .bank-btn.globus .icon { background:#138b78; }
   .bank-btn .bank-name { min-width:0; line-height:1.2; overflow-wrap:anywhere; }
   .banks-note { margin-top:12px; color:#8a6d1d; background:#fff8df; border:1px solid #f2df9b; border-radius:10px; padding:9px 10px; font-size:10.5px; line-height:1.45; }
   .other-bank-link { display:block; text-align:center; margin-top:12px; padding:10px; font-size:13px; color:var(--teal); text-decoration:none; font-weight:500; }
@@ -524,8 +528,18 @@ var BANKS = [
   { code:'otp', name:'OTP Bank', cls:'otp', letter:'O', ios:{ type:'scheme', prefix:'otpbankua://payment/qr/' }, android:{ type:'intent', pkg:'ua.otpbank.android' } },
   { code:'vst', name:'VST Bank', cls:'vst', letter:'V', ios:{ type:'scheme', prefix:'vostok://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.vostok.bv' } },
   { code:'credit-agricole', name:'Credit Agricole', cls:'credit-agricole', letter:'CA', ios:{ type:'universal', prefix:'https://caplusapp.credit-agricole.ua/qr/' }, android:{ type:'universal', prefix:'https://caplusapp.credit-agricole.ua/qr/' } },
-  { code:'ukrsib', name:'UKRSIB', cls:'ukrsib', letter:'U', ios:{ type:'scheme', prefix:'com.ukrsibbank.ukrsibonline.new://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.ukrsibbank.uso.android' } }
+  { code:'ukrsib', name:'UKRSIB', cls:'ukrsib', letter:'U', ios:{ type:'scheme', prefix:'com.ukrsibbank.ukrsibonline.new://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.ukrsibbank.uso.android' } },
+  { code:'kredo', name:'KredoBank', cls:'kredo', letter:'K', ios:null, android:{ type:'intent', pkg:'ua.android.kredobank.prod' } },
+  { code:'izi', name:'izibank', cls:'izi', letter:'i', ios:null, android:{ type:'intent', pkg:'ua.izibank.app' } },
+  { code:'credit-dnipro', name:'Кредит Дніпро', cls:'credit-dnipro', letter:'КД', ios:null, android:{ type:'intent', pkg:'com.creditdnepr.mb' } },
+  { code:'globus', name:'Глобус Банк', cls:'globus', letter:'G', ios:null, android:{ type:'intent', pkg:'com.t18.bone.personal.globus' } }
 ];
+
+function getPlatformBanks() {
+  return BANKS.filter(function (bank) {
+    return isIOS ? !!bank.ios : !!bank.android;
+  });
+}
 
 document.addEventListener('DOMContentLoaded', function () {
   setupQrImages();
@@ -550,7 +564,7 @@ function setupBanks() {
   var grid = document.getElementById('banksGrid');
   var otherLink = document.getElementById('otherBankLink');
   if (!grid || !otherLink) return;
-  grid.innerHTML = BANKS.map(function (bank) {
+  grid.innerHTML = getPlatformBanks().map(function (bank) {
     var launch = isIOS ? bank.ios : bank.android;
     var href = buildBankUrl(launch);
     return '<a class="bank-btn ' + bank.cls + '" href="' + href + '"' +
@@ -701,7 +715,7 @@ function renderDebug() {
     dryRun: isDryRun,
     userAgent: ua,
     nbu: payloadInfo,
-    banksVisible: BANKS.length,
+    banksVisible: getPlatformBanks().length,
     events: debugEvents
   }, null, 2);
 }
