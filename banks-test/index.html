@@ -273,7 +273,7 @@
           <button class="icon-style-btn" type="button" data-icon-style="framed" aria-pressed="false">У рамці</button>
           <button class="icon-style-btn" type="button" data-icon-style="circle" aria-pressed="false">Коло</button>
         </div>
-        <div class="icon-style-hint" id="iconStyleHint">Оригінальний вигляд іконки застосунку — рекомендований варіант.</div>
+        <div class="icon-style-hint" id="iconStyleHint">Оригінальний вигляд іконки застосунку — рекомендовано для Android.</div>
       </div>
       <div class="banks-grid" id="banksGrid">
         <!-- Filled by JS based on OS -->
@@ -588,13 +588,13 @@ function setupIconStylePicker() {
   if (!picker || !hint) return;
 
   var styles = {
-    native: 'Оригінальний вигляд іконки застосунку — рекомендований варіант.',
+    native: 'Оригінальний вигляд іконки застосунку — рекомендовано для Android.',
     framed: 'Єдина біла рамка вирівнює іконки з різною формою та фоном.',
-    circle: 'Кругла подача компактна, але може обрізати кутові елементи логотипів.'
+    circle: 'Кругла подача у стилі iOS та IBAN24; може обрізати кутові елементи логотипів.'
   };
   var selected = query.get('icons');
   try { selected = selected || localStorage.getItem('foppay-bank-icon-style'); } catch (error) {}
-  if (!styles[selected]) selected = 'native';
+  if (!styles[selected]) selected = isIOS ? 'circle' : 'native';
 
   function applyIconStyle(style) {
     document.body.dataset.iconStyle = style;
