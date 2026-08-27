@@ -68,42 +68,25 @@
 
   /* Bank buttons */
   .banks-section { padding:16px 24px 8px; }
+  .icon-lab { margin-bottom:12px; padding:10px; border:1px solid var(--border); border-radius:12px; background:#f8fafb; }
+  .icon-lab-title { margin-bottom:7px; color:var(--muted); font-size:10px; font-weight:700; letter-spacing:.4px; text-transform:uppercase; }
+  .icon-style-picker { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; padding:3px; border-radius:10px; background:#e9eef1; }
+  .icon-style-btn { min-width:0; padding:7px 5px; border:0; border-radius:8px; background:transparent; color:#536069; font:600 10.5px/1.1 inherit; cursor:pointer; transition:background .15s,color .15s,box-shadow .15s; }
+  .icon-style-btn[aria-pressed="true"] { background:#fff; color:var(--teal); box-shadow:0 1px 4px rgba(15,42,52,.16); }
+  .icon-style-hint { margin-top:7px; color:#66737a; font-size:10px; line-height:1.4; }
   .banks-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
   .bank-btn { display:flex; align-items:center; gap:10px; min-width:0; padding:12px 10px; background:var(--card-bg); border:1.5px solid var(--card-border); border-radius:12px; cursor:pointer; text-decoration:none; color:var(--text); font-family:inherit; font-size:12px; font-weight:600; transition:all .15s; }
   .bank-btn:hover { border-color:var(--teal); background:#f0fafb; }
   .bank-btn:active { transform:scale(.97); }
-  .bank-btn .icon { width:32px; height:32px; border-radius:8px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700; color:#fff; }
-  .bank-btn.privat .icon { background:#5cb85c; }
-  .bank-btn.mono .icon { background:#1a1a1a; }
-  .bank-btn.oschad .icon { background:#006837; }
-  .bank-btn.raiff .icon { background:#ffd300; color:#1a1a1a; }
-  .bank-btn.abank .icon { background:#ff6b00; }
-  .bank-btn.pumb .icon { background:#e31e24; }
-  .bank-btn.ukrsib .icon { background:#00694b; }
-  .bank-btn.sense .icon { background:#6c3ce1; }
-  .bank-btn.privat-business .icon { background:#1b5e20; }
-  .bank-btn.ecobank .icon { background:#008f65; }
-  .bank-btn.otp .icon { background:#4cae3e; }
-  .bank-btn.vst .icon { background:#164194; }
-  .bank-btn.credit-agricole .icon { background:#167247; }
-  .bank-btn.kredo .icon { background:#005baa; }
-  .bank-btn.izi .icon { background:#5147ff; }
-  .bank-btn.credit-dnipro .icon { background:#0057b8; }
-  .bank-btn.globus .icon { background:#138b78; }
-  .bank-btn.obank .icon { background:#7a2fb5; }
-  .bank-btn.accord .icon { background:#d5202f; }
-  .bank-btn.rada .icon { background:#1155a5; }
-  .bank-btn.unex .icon { background:#5b2b82; }
-  .bank-btn.alliance .icon { background:#164a9b; }
-  .bank-btn.pivdenny .icon { background:#0057a8; }
-  .bank-btn.mtb .icon { background:#183b6b; }
-  .bank-btn.winbank .icon { background:#00529b; }
-  .bank-btn.pravex .icon { background:#ef7d00; }
-  .bank-btn.altbank .icon { background:#582c83; }
-  .bank-btn.bank34 .icon { background:#253b70; }
-  .bank-btn.procredit .icon { background:#178647; }
-  .bank-btn.grant .icon { background:#b11f3d; }
-  .bank-btn.ukrsib-business .icon { background:#004b3f; }
+  .bank-btn .bank-icon { position:relative; width:36px; height:36px; flex:0 0 36px; display:grid; place-items:center; overflow:hidden; transition:width .15s,height .15s,flex-basis .15s,border-radius .15s,padding .15s,box-shadow .15s; }
+  .bank-btn .bank-icon img { display:block; width:100%; height:100%; border-radius:9px; object-fit:cover; transition:border-radius .15s; }
+  .bank-btn .icon-fallback { display:none; position:absolute; inset:0; place-items:center; border-radius:inherit; background:var(--teal); color:#fff; font-size:12px; font-weight:700; }
+  .bank-btn .bank-icon.is-fallback .icon-fallback { display:grid; }
+  .bank-btn .bank-icon.is-fallback img { display:none; }
+  body[data-icon-style="framed"] .bank-btn .bank-icon { width:40px; height:40px; flex-basis:40px; padding:3px; border:1px solid #dce3e7; border-radius:11px; background:#fff; box-shadow:0 2px 7px rgba(15,42,52,.1); }
+  body[data-icon-style="framed"] .bank-btn .bank-icon img { border-radius:7px; object-fit:contain; }
+  body[data-icon-style="circle"] .bank-btn .bank-icon { width:38px; height:38px; flex-basis:38px; border:1px solid #dce3e7; border-radius:50%; background:#fff; box-shadow:0 3px 9px rgba(11,22,51,.1); }
+  body[data-icon-style="circle"] .bank-btn .bank-icon img { border-radius:50%; object-fit:cover; }
   .bank-btn .bank-name { min-width:0; line-height:1.2; overflow-wrap:anywhere; }
   .banks-note { margin-top:12px; color:#8a6d1d; background:#fff8df; border:1px solid #f2df9b; border-radius:10px; padding:9px 10px; font-size:10.5px; line-height:1.45; }
   .other-bank-link { display:block; text-align:center; margin-top:12px; padding:10px; font-size:13px; color:var(--teal); text-decoration:none; font-weight:500; }
@@ -254,7 +237,7 @@
   .test-badge { position:fixed; top:8px; left:50%; transform:translateX(-50%); z-index:950; padding:6px 12px; border-radius:999px; background:#fff3cd; border:1px solid #e5c96a; color:#6f5200; font-size:11px; font-weight:700; box-shadow:0 4px 14px rgba(0,0,0,.12); white-space:nowrap; }
 </style>
 </head>
-<body>
+<body data-icon-style="native">
 
 <div class="test-badge">ТЕСТОВИЙ СТЕНД · БАНКІВСЬКІ КНОПКИ</div>
 
@@ -283,6 +266,15 @@
   <!-- TAB 1: Banks (OS-specific) -->
   <div class="tab-content active" id="tab-banks">
     <div class="banks-section">
+      <div class="icon-lab">
+        <div class="icon-lab-title">Оформлення іконок</div>
+        <div class="icon-style-picker" id="iconStylePicker" role="group" aria-label="Оформлення іконок банків">
+          <button class="icon-style-btn" type="button" data-icon-style="native" aria-pressed="true">Android</button>
+          <button class="icon-style-btn" type="button" data-icon-style="framed" aria-pressed="false">У рамці</button>
+          <button class="icon-style-btn" type="button" data-icon-style="circle" aria-pressed="false">Коло</button>
+        </div>
+        <div class="icon-style-hint" id="iconStyleHint">Оригінальний вигляд іконки застосунку — рекомендований варіант.</div>
+      </div>
       <div class="banks-grid" id="banksGrid">
         <!-- Filled by JS based on OS -->
       </div>
@@ -530,12 +522,12 @@ var PAYMENT_PAYLOAD = DEEPLINK.slice(NBU_PREFIX.length);
  * handled by the delayed QR/NBU fallback below.
  */
 var BANKS = [
-  { code:'privat', name:'ПриватБанк', cls:'privat', letter:'P', ios:{ type:'scheme', prefix:'privat24://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.privatbank.ap24' } },
-  { code:'mono', name:'monobank', cls:'mono', letter:'m', ios:{ type:'scheme', prefix:'mono://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.ftband.mono' } },
-  { code:'pumb', name:'ПУМБ', cls:'pumb', letter:'П', ios:{ type:'universal', prefix:'https://mobile-app.pumb.ua/bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.fuib.android.spot.online' } },
-  { code:'raiffeisen', name:'Raiffeisen', cls:'raiff', letter:'R', ios:{ type:'scheme', prefix:'myraif://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.raiffeisen.myraif' } },
-  { code:'abank', name:'А-Банк', cls:'abank', letter:'A', ios:{ type:'scheme', prefix:'abank24://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.com.abank' } },
-  { code:'sense', name:'Sense', cls:'sense', letter:'S', ios:{ type:'nbu', payload:'legacy' }, android:{ type:'intent', pkg:'ua.alfabank.mobile.android', payload:'legacy' } },
+  { code:'privat', name:'ПриватБанк', cls:'privat', letter:'P', icon:'bank-icons/privat24.webp', ios:{ type:'scheme', prefix:'privat24://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.privatbank.ap24' } },
+  { code:'mono', name:'monobank', cls:'mono', letter:'m', icon:'bank-icons/mono.webp', ios:{ type:'scheme', prefix:'mono://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.ftband.mono' } },
+  { code:'pumb', name:'ПУМБ', cls:'pumb', letter:'П', icon:'bank-icons/pumb.webp', ios:{ type:'universal', prefix:'https://mobile-app.pumb.ua/bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.fuib.android.spot.online' } },
+  { code:'raiffeisen', name:'Raiffeisen', cls:'raiff', letter:'R', icon:'bank-icons/raif.webp', ios:{ type:'scheme', prefix:'myraif://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.raiffeisen.myraif' } },
+  { code:'abank', name:'А-Банк', cls:'abank', letter:'A', icon:'bank-icons/abank.webp', ios:{ type:'scheme', prefix:'abank24://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.com.abank' } },
+  { code:'sense', name:'Sense', cls:'sense', letter:'S', icon:'bank-icons/sense.webp', ios:{ type:'nbu', payload:'legacy' }, android:{ type:'intent', pkg:'ua.alfabank.mobile.android', payload:'legacy' } },
   /*
    * Oschad retail app is NOT in NBU's bank.gov.ua assetlinks.json, so an
    * intent against bank.gov.ua/qr can never resolve there (falls to Play
@@ -545,31 +537,31 @@ var BANKS = [
    * messenger in-app browsers and degrades to Play Store when the app is
    * missing. The app ignores the NBU payload (no requisites autofill).
    */
-  { code:'oschad', name:'Ощадбанк', cls:'oschad', letter:'О', ios:{ type:'universal', prefix:'https://online.oschadbank.ua/images/deeplinks/flumo/' }, android:{ type:'intent', pkg:'ua.oschadbank.flumo', applink:'online.oschadbank.ua/images/deeplinks/flumo/' } },
-  { code:'privat-business', name:'ПриватБізнес', cls:'privat-business', letter:'PB', ios:{ type:'scheme', prefix:'p24business://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.privatbank.cb' } },
-  { code:'ecobank', name:'ЕКОбанк', cls:'ecobank', letter:'E', ios:{ type:'scheme', prefix:'ecobank://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.ugb.app' } },
-  { code:'otp', name:'OTP Bank', cls:'otp', letter:'O', ios:{ type:'scheme', prefix:'otpbankua://payment/qr/' }, android:{ type:'intent', pkg:'ua.otpbank.android' } },
-  { code:'vst', name:'VST Bank', cls:'vst', letter:'V', ios:{ type:'scheme', prefix:'vostok://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.vostok.bv' } },
-  { code:'credit-agricole', name:'Credit Agricole', cls:'credit-agricole', letter:'CA', ios:{ type:'universal', prefix:'https://caplusapp.credit-agricole.ua/qr/' }, android:{ type:'universal', prefix:'https://caplusapp.credit-agricole.ua/qr/' } },
-  { code:'ukrsib', name:'UKRSIB', cls:'ukrsib', letter:'U', ios:{ type:'scheme', prefix:'com.ukrsibbank.ukrsibonline.new://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.ukrsibbank.uso.android' } },
-  { code:'kredo', name:'KredoBank', cls:'kredo', letter:'K', ios:null, android:{ type:'intent', pkg:'ua.android.kredobank.prod' } },
-  { code:'izi', name:'izibank', cls:'izi', letter:'i', ios:null, android:{ type:'intent', pkg:'ua.izibank.app' } },
-  { code:'credit-dnipro', name:'Кредит Дніпро', cls:'credit-dnipro', letter:'КД', ios:null, android:{ type:'intent', pkg:'com.creditdnepr.mb' } },
-  { code:'globus', name:'Глобус Банк', cls:'globus', letter:'G', ios:null, android:{ type:'intent', pkg:'com.t18.bone.personal.globus' } },
-  { code:'obank', name:'O.Bank', cls:'obank', letter:'O', ios:null, android:{ type:'intent', pkg:'ua.ideabank.obank' } },
-  { code:'accord', name:'Акордбанк', cls:'accord', letter:'А', ios:null, android:{ type:'intent', pkg:'online.kapowai.accordbank' } },
-  { code:'rada', name:'RB24', cls:'rada', letter:'R', ios:null, android:{ type:'intent', pkg:'com.radabank.rb24' } },
-  { code:'unex', name:'Unex Bank', cls:'unex', letter:'U', ios:null, android:{ type:'intent', pkg:'online.kapowai.unexbank' } },
-  { code:'alliance', name:'Alliance', cls:'alliance', letter:'A', ios:null, android:{ type:'intent', pkg:'ua.monvel.bankalliance' } },
-  { code:'pivdenny', name:'Pivdenny Online', cls:'pivdenny', letter:'П', ios:null, android:{ type:'intent', pkg:'com.bank.pivdenny' } },
-  { code:'mtb', name:'MTB360', cls:'mtb', letter:'M', ios:null, android:{ type:'intent', pkg:'com.ua.mtb.bank' } },
-  { code:'winbank', name:'Winbank', cls:'winbank', letter:'W', ios:null, android:{ type:'intent', pkg:'ua.piraeusbank.mobile.app.pbu' } },
-  { code:'pravex', name:'PRAVEX ONLINE', cls:'pravex', letter:'P', ios:null, android:{ type:'intent', pkg:'ua.com.pravex.online' } },
-  { code:'altbank', name:'Altbank Private', cls:'altbank', letter:'A', ios:null, android:{ type:'intent', pkg:'by.st.alt.fiz' } },
-  { code:'bank34', name:'Smart Bank 3/4', cls:'bank34', letter:'3/4', ios:null, android:{ type:'intent', pkg:'online.kapowai.bank34online' } },
-  { code:'procredit', name:'ProCredit Bank', cls:'procredit', letter:'PC', ios:null, android:{ type:'intent', pkg:'com.quipugmbh.mba.ukraine' } },
-  { code:'grant', name:'Смарт-Грант', cls:'grant', letter:'Г', ios:null, android:{ type:'intent', pkg:'ua.grant.smart' } },
-  { code:'ukrsib-business', name:'UKRSIB business', cls:'ukrsib-business', letter:'UB', ios:null, android:{ type:'intent', pkg:'com.ukrsibbank.ukrsibbusiness' } }
+  { code:'oschad', name:'Ощадбанк', cls:'oschad', letter:'О', icon:'bank-icons/oschad.webp', ios:{ type:'universal', prefix:'https://online.oschadbank.ua/images/deeplinks/flumo/' }, android:{ type:'intent', pkg:'ua.oschadbank.flumo', applink:'online.oschadbank.ua/images/deeplinks/flumo/' } },
+  { code:'privat-business', name:'ПриватБізнес', cls:'privat-business', letter:'PB', icon:'bank-icons/privat24biz.webp', ios:{ type:'scheme', prefix:'p24business://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.privatbank.cb' } },
+  { code:'ecobank', name:'ЕКОбанк', cls:'ecobank', letter:'E', icon:'bank-icons/ugb.webp', ios:{ type:'scheme', prefix:'ecobank://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.ugb.app' } },
+  { code:'otp', name:'OTP Bank', cls:'otp', letter:'O', icon:'bank-icons/otp.webp', ios:{ type:'scheme', prefix:'otpbankua://payment/qr/' }, android:{ type:'intent', pkg:'ua.otpbank.android' } },
+  { code:'vst', name:'VST Bank', cls:'vst', letter:'V', icon:'bank-icons/vst.webp', ios:{ type:'scheme', prefix:'vostok://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.vostok.bv' } },
+  { code:'credit-agricole', name:'Credit Agricole', cls:'credit-agricole', letter:'CA', icon:'bank-icons/ca.webp', ios:{ type:'universal', prefix:'https://caplusapp.credit-agricole.ua/qr/' }, android:{ type:'universal', prefix:'https://caplusapp.credit-agricole.ua/qr/' } },
+  { code:'ukrsib', name:'UKRSIB', cls:'ukrsib', letter:'U', icon:'bank-icons/ukrsib.webp', ios:{ type:'scheme', prefix:'com.ukrsibbank.ukrsibonline.new://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'com.ukrsibbank.uso.android' } },
+  { code:'kredo', name:'KredoBank', cls:'kredo', letter:'K', icon:'bank-icons/kredo.webp', ios:null, android:{ type:'intent', pkg:'ua.android.kredobank.prod' } },
+  { code:'izi', name:'izibank', cls:'izi', letter:'i', icon:'bank-icons/izi.webp', ios:null, android:{ type:'intent', pkg:'ua.izibank.app' } },
+  { code:'credit-dnipro', name:'Кредит Дніпро', cls:'credit-dnipro', letter:'КД', icon:'bank-icons/freebank.webp', ios:null, android:{ type:'intent', pkg:'com.creditdnepr.mb' } },
+  { code:'globus', name:'Глобус Банк', cls:'globus', letter:'G', icon:'bank-icons/globus.webp', ios:null, android:{ type:'intent', pkg:'com.t18.bone.personal.globus' } },
+  { code:'obank', name:'O.Bank', cls:'obank', letter:'O', icon:'bank-icons/ob.webp', ios:null, android:{ type:'intent', pkg:'ua.ideabank.obank' } },
+  { code:'accord', name:'Акордбанк', cls:'accord', letter:'А', icon:'bank-icons/akord.webp', ios:null, android:{ type:'intent', pkg:'online.kapowai.accordbank' } },
+  { code:'rada', name:'RB24', cls:'rada', letter:'R', icon:'bank-icons/rada.webp', ios:null, android:{ type:'intent', pkg:'com.radabank.rb24' } },
+  { code:'unex', name:'Unex Bank', cls:'unex', letter:'U', icon:'bank-icons/unex.webp', ios:null, android:{ type:'intent', pkg:'online.kapowai.unexbank' } },
+  { code:'alliance', name:'Alliance', cls:'alliance', letter:'A', icon:'bank-icons/alliance.webp', ios:null, android:{ type:'intent', pkg:'ua.monvel.bankalliance' } },
+  { code:'pivdenny', name:'Pivdenny Online', cls:'pivdenny', letter:'П', icon:'bank-icons/pivdenny.webp', ios:null, android:{ type:'intent', pkg:'com.bank.pivdenny' } },
+  { code:'mtb', name:'MTB360', cls:'mtb', letter:'M', icon:'bank-icons/mtb.webp', ios:null, android:{ type:'intent', pkg:'com.ua.mtb.bank' } },
+  { code:'winbank', name:'Winbank', cls:'winbank', letter:'W', icon:'bank-icons/winbank.webp', ios:null, android:{ type:'intent', pkg:'ua.piraeusbank.mobile.app.pbu' } },
+  { code:'pravex', name:'PRAVEX ONLINE', cls:'pravex', letter:'P', icon:'bank-icons/pravex.webp', ios:null, android:{ type:'intent', pkg:'ua.com.pravex.online' } },
+  { code:'altbank', name:'Altbank Private', cls:'altbank', letter:'A', icon:'bank-icons/alt.webp', ios:null, android:{ type:'intent', pkg:'by.st.alt.fiz' } },
+  { code:'bank34', name:'Smart Bank 3/4', cls:'bank34', letter:'3/4', icon:'bank-icons/bank34.webp', ios:null, android:{ type:'intent', pkg:'online.kapowai.bank34online' } },
+  { code:'procredit', name:'ProCredit Bank', cls:'procredit', letter:'PC', icon:'bank-icons/procredit.webp', ios:null, android:{ type:'intent', pkg:'com.quipugmbh.mba.ukraine' } },
+  { code:'grant', name:'Смарт-Грант', cls:'grant', letter:'Г', icon:'bank-icons/grant.webp', ios:null, android:{ type:'intent', pkg:'ua.grant.smart' } },
+  { code:'ukrsib-business', name:'UKRSIB business', cls:'ukrsib-business', letter:'UB', icon:'bank-icons/ukrsibbiz.webp', ios:null, android:{ type:'intent', pkg:'com.ukrsibbank.ukrsibbusiness' } }
 ];
 
 function getPlatformBanks() {
@@ -580,6 +572,7 @@ function getPlatformBanks() {
 
 document.addEventListener('DOMContentLoaded', function () {
   setupQrImages();
+  setupIconStylePicker();
   setupBanks();
   setupTabs();
   setupFallback();
@@ -588,6 +581,36 @@ document.addEventListener('DOMContentLoaded', function () {
   setupAccordion();
   setupFullscreen();
 });
+
+function setupIconStylePicker() {
+  var picker = document.getElementById('iconStylePicker');
+  var hint = document.getElementById('iconStyleHint');
+  if (!picker || !hint) return;
+
+  var styles = {
+    native: 'Оригінальний вигляд іконки застосунку — рекомендований варіант.',
+    framed: 'Єдина біла рамка вирівнює іконки з різною формою та фоном.',
+    circle: 'Кругла подача компактна, але може обрізати кутові елементи логотипів.'
+  };
+  var selected = query.get('icons');
+  try { selected = selected || localStorage.getItem('foppay-bank-icon-style'); } catch (error) {}
+  if (!styles[selected]) selected = 'native';
+
+  function applyIconStyle(style) {
+    document.body.dataset.iconStyle = style;
+    hint.textContent = styles[style];
+    picker.querySelectorAll('[data-icon-style]').forEach(function (button) {
+      button.setAttribute('aria-pressed', button.dataset.iconStyle === style ? 'true' : 'false');
+    });
+    try { localStorage.setItem('foppay-bank-icon-style', style); } catch (error) {}
+  }
+
+  picker.addEventListener('click', function (event) {
+    var button = event.target.closest('[data-icon-style]');
+    if (button) applyIconStyle(button.dataset.iconStyle);
+  });
+  applyIconStyle(selected);
+}
 
 function setupQrImages() {
   document.querySelectorAll('[data-qr="payment"]').forEach(function (image) {
@@ -606,9 +629,15 @@ function setupBanks() {
     var href = buildBankUrl(launch);
     return '<a class="bank-btn ' + bank.cls + '" href="' + href + '"' +
       ' data-bank-code="' + bank.code + '" data-launch-method="' + launch.type + '">' +
-      '<span class="icon">' + bank.letter + '</span>' +
+      '<span class="icon bank-icon" aria-hidden="true"><img src="' + bank.icon + '" alt="" width="40" height="40" loading="lazy" decoding="async"><span class="icon-fallback">' + bank.letter + '</span></span>' +
       '<span class="bank-name">' + bank.name + '</span></a>';
   }).join('');
+
+  grid.querySelectorAll('.bank-icon img').forEach(function (image) {
+    image.addEventListener('error', function () {
+      image.closest('.bank-icon').classList.add('is-fallback');
+    });
+  });
 
   grid.querySelectorAll('.bank-btn').forEach(function (button) {
     button.addEventListener('click', function (event) {
