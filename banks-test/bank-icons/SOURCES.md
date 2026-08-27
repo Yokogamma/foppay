@@ -12,6 +12,11 @@
   <https://pay24.com.ua/pay/K33BZK4NDa> (завантажено 2026-08-27).
 - `oschad.webp` — офіційна іконка застосунку «Ощад» з Google Play,
   package `ua.oschadbank.flumo` (завантажено 2026-08-27).
+- `novapay.webp` — офіційна іконка застосунку NovaPay з Google Play,
+  package `ua.novapay.novapaymobile` (завантажено 2026-08-27).
+  Підтримку `bank.gov.ua/qr/*` звірено з офіційними файлами НБУ
+  [Android Asset Links](https://bank.gov.ua/.well-known/assetlinks.json) та
+  [Apple App Site Association](https://bank.gov.ua/.well-known/apple-app-site-association).
 
 Для звірки складу й оформлення також використані:
 

@@ -88,6 +88,13 @@
   body[data-icon-style="circle"] .bank-btn .bank-icon { width:38px; height:38px; flex-basis:38px; border:1px solid #dce3e7; border-radius:50%; background:#fff; box-shadow:0 3px 9px rgba(11,22,51,.1); }
   body[data-icon-style="circle"] .bank-btn .bank-icon img { border-radius:50%; object-fit:cover; }
   .bank-btn .bank-name { min-width:0; line-height:1.2; overflow-wrap:anywhere; }
+  .other-banks-toggle { width:100%; margin-top:10px; padding:10px 12px; display:flex; align-items:center; justify-content:center; gap:7px; border:1px dashed #b7c9cf; border-radius:11px; background:#f8fbfc; color:var(--teal); font:600 12.5px/1 inherit; cursor:pointer; transition:background .15s,border-color .15s; }
+  .other-banks-toggle:hover { border-color:var(--teal); background:#f0fafb; }
+  .other-banks-count { min-width:22px; padding:3px 6px; border-radius:999px; background:#dfeff1; color:#39747b; font-size:10px; }
+  .other-banks-arrow { width:14px; height:14px; transition:transform .2s; }
+  .other-banks-toggle[aria-expanded="true"] .other-banks-arrow { transform:rotate(180deg); }
+  .other-banks-panel { margin-top:8px; }
+  .other-banks-panel[hidden] { display:none; }
   .banks-note { margin-top:12px; color:#8a6d1d; background:#fff8df; border:1px solid #f2df9b; border-radius:10px; padding:9px 10px; font-size:10.5px; line-height:1.45; }
   .other-bank-link { display:block; text-align:center; margin-top:12px; padding:10px; font-size:13px; color:var(--teal); text-decoration:none; font-weight:500; }
 
@@ -278,8 +285,16 @@
       <div class="banks-grid" id="banksGrid">
         <!-- Filled by JS based on OS -->
       </div>
-      <div class="banks-note">Тестові інтеграції: 14 додаткових Android-застосунків додано за переліком Pay24, package ID звірено з Google Play. Відкриття та заповнення реквізитів потребують перевірки на телефоні. Ощад: підтверджено робочий запуск застосунку через intent на верифікований хост <b>online.oschadbank.ua</b>. Deeplink НБУ банк не підтримує, тому реквізити не підставляються — оплата за скопійованим IBAN або через QR усередині застосунку.</div>
-      <a class="other-bank-link" id="otherBankLink" href="#">Інший банк →</a>
+      <button class="other-banks-toggle" id="otherBanksToggle" type="button" aria-expanded="false" aria-controls="otherBanksPanel">
+        <span>Інші банки</span>
+        <span class="other-banks-count" id="otherBanksCount">0</span>
+        <svg class="other-banks-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="other-banks-panel" id="otherBanksPanel" hidden>
+        <div class="banks-grid" id="otherBanksGrid"></div>
+      </div>
+      <div class="banks-note">Тестові інтеграції: Android package ID звірено з Google Play. NovaPay додано через офіційно підтверджені Android та iOS асоціації НБУ. Відкриття та заповнення реквізитів потребують перевірки на телефоні. Ощад: підтверджено робочий запуск застосунку через intent на верифікований хост <b>online.oschadbank.ua</b>. Deeplink НБУ банк не підтримує, тому реквізити не підставляються — оплата за скопійованим IBAN або через QR усередині застосунку.</div>
+      <a class="other-bank-link" id="otherBankLink" href="#">Банк не у списку →</a>
     </div>
   </div>
 
@@ -553,6 +568,7 @@ var BANKS = [
   { code:'rada', name:'RB24', cls:'rada', letter:'R', icon:'bank-icons/rada.webp', ios:null, android:{ type:'intent', pkg:'com.radabank.rb24' } },
   { code:'unex', name:'Unex Bank', cls:'unex', letter:'U', icon:'bank-icons/unex.webp', ios:null, android:{ type:'intent', pkg:'online.kapowai.unexbank' } },
   { code:'alliance', name:'Alliance', cls:'alliance', letter:'A', icon:'bank-icons/alliance.webp', ios:null, android:{ type:'intent', pkg:'ua.monvel.bankalliance' } },
+  { code:'novapay', name:'NovaPay', cls:'novapay', letter:'N', icon:'bank-icons/novapay.webp', ios:{ type:'universal', prefix:'https://bank.gov.ua/qr/' }, android:{ type:'intent', pkg:'ua.novapay.novapaymobile' } },
   { code:'pivdenny', name:'Pivdenny Online', cls:'pivdenny', letter:'П', icon:'bank-icons/pivdenny.webp', ios:null, android:{ type:'intent', pkg:'com.bank.pivdenny' } },
   { code:'mtb', name:'MTB360', cls:'mtb', letter:'M', icon:'bank-icons/mtb.webp', ios:null, android:{ type:'intent', pkg:'com.ua.mtb.bank' } },
   { code:'winbank', name:'Winbank', cls:'winbank', letter:'W', icon:'bank-icons/winbank.webp', ios:null, android:{ type:'intent', pkg:'ua.piraeusbank.mobile.app.pbu' } },
@@ -564,9 +580,25 @@ var BANKS = [
   { code:'ukrsib-business', name:'UKRSIB business', cls:'ukrsib-business', letter:'UB', icon:'bank-icons/ukrsibbiz.webp', ios:null, android:{ type:'intent', pkg:'com.ukrsibbank.ukrsibbusiness' } }
 ];
 
+var FEATURED_BANK_CODES = [
+  'privat', 'mono', 'oschad', 'abank',
+  'pumb', 'raiffeisen', 'sense', 'privat-business'
+];
+
+var OTHER_BANK_CODES = [
+  'ukrsib', 'ecobank', 'otp', 'alliance', 'novapay', 'vst',
+  'kredo', 'obank', 'credit-agricole', 'pivdenny', 'credit-dnipro',
+  'izi', 'unex', 'accord', 'globus', 'mtb', 'winbank', 'rada',
+  'pravex', 'procredit', 'altbank', 'grant', 'bank34', 'ukrsib-business'
+];
+
 function getPlatformBanks() {
-  return BANKS.filter(function (bank) {
-    return isIOS ? !!bank.ios : !!bank.android;
+  var bankByCode = {};
+  BANKS.forEach(function (bank) { bankByCode[bank.code] = bank; });
+  return FEATURED_BANK_CODES.concat(OTHER_BANK_CODES).map(function (code) {
+    return bankByCode[code];
+  }).filter(function (bank) {
+    return bank && (isIOS ? !!bank.ios : !!bank.android);
   });
 }
 
@@ -622,41 +654,71 @@ function setupQrImages() {
 
 function setupBanks() {
   var grid = document.getElementById('banksGrid');
+  var otherGrid = document.getElementById('otherBanksGrid');
+  var otherToggle = document.getElementById('otherBanksToggle');
+  var otherPanel = document.getElementById('otherBanksPanel');
+  var otherCount = document.getElementById('otherBanksCount');
   var otherLink = document.getElementById('otherBankLink');
-  if (!grid || !otherLink) return;
-  grid.innerHTML = getPlatformBanks().map(function (bank) {
-    var launch = isIOS ? bank.ios : bank.android;
-    var href = buildBankUrl(launch);
-    return '<a class="bank-btn ' + bank.cls + '" href="' + href + '"' +
-      ' data-bank-code="' + bank.code + '" data-launch-method="' + launch.type + '">' +
-      '<span class="icon bank-icon" aria-hidden="true"><img src="' + bank.icon + '" alt="" width="40" height="40" loading="lazy" decoding="async"><span class="icon-fallback">' + bank.letter + '</span></span>' +
-      '<span class="bank-name">' + bank.name + '</span></a>';
-  }).join('');
+  if (!grid || !otherGrid || !otherToggle || !otherPanel || !otherCount || !otherLink) return;
 
-  grid.querySelectorAll('.bank-icon img').forEach(function (image) {
-    image.addEventListener('error', function () {
-      image.closest('.bank-icon').classList.add('is-fallback');
-    });
+  var platformBanks = getPlatformBanks();
+  var featuredBanks = platformBanks.filter(function (bank) {
+    return FEATURED_BANK_CODES.indexOf(bank.code) !== -1;
+  });
+  var otherBanks = platformBanks.filter(function (bank) {
+    return FEATURED_BANK_CODES.indexOf(bank.code) === -1;
   });
 
-  grid.querySelectorAll('.bank-btn').forEach(function (button) {
-    button.addEventListener('click', function (event) {
-      var bank = BANKS.find(function (item) { return item.code === button.dataset.bankCode; });
+  function renderBankButtons(banks) {
+    return banks.map(function (bank) {
       var launch = isIOS ? bank.ios : bank.android;
-      if (isDryRun) event.preventDefault();
-      cancelFallbackTimer();
-      pendingBank = null;
-      logDebug('bank_click', bank, launch, button.href);
+      var href = buildBankUrl(launch);
+      return '<a class="bank-btn ' + bank.cls + '" href="' + href + '"' +
+        ' data-bank-code="' + bank.code + '" data-launch-method="' + launch.type + '">' +
+        '<span class="icon bank-icon" aria-hidden="true"><img src="' + bank.icon + '" alt="" width="40" height="40" loading="lazy" decoding="async"><span class="icon-fallback">' + bank.letter + '</span></span>' +
+        '<span class="bank-name">' + bank.name + '</span></a>';
+    }).join('');
+  }
 
-      if (launch.type === 'qr') {
-        event.preventDefault();
-        activateTab('qr');
-        showToast(bank.name + ': відкрийте сканер QR у застосунку');
-        return;
-      }
-
-      scheduleFallback(bank);
+  function bindBankButtons(container) {
+    container.querySelectorAll('.bank-icon img').forEach(function (image) {
+      image.addEventListener('error', function () {
+        image.closest('.bank-icon').classList.add('is-fallback');
+      });
     });
+
+    container.querySelectorAll('.bank-btn').forEach(function (button) {
+      button.addEventListener('click', function (event) {
+        var bank = BANKS.find(function (item) { return item.code === button.dataset.bankCode; });
+        var launch = isIOS ? bank.ios : bank.android;
+        if (isDryRun) event.preventDefault();
+        cancelFallbackTimer();
+        pendingBank = null;
+        logDebug('bank_click', bank, launch, button.href);
+
+        if (launch.type === 'qr') {
+          event.preventDefault();
+          activateTab('qr');
+          showToast(bank.name + ': відкрийте сканер QR у застосунку');
+          return;
+        }
+
+        scheduleFallback(bank);
+      });
+    });
+  }
+
+  grid.innerHTML = renderBankButtons(featuredBanks);
+  otherGrid.innerHTML = renderBankButtons(otherBanks);
+  bindBankButtons(grid);
+  bindBankButtons(otherGrid);
+
+  otherCount.textContent = String(otherBanks.length);
+  otherToggle.hidden = otherBanks.length === 0;
+  otherToggle.addEventListener('click', function () {
+    var shouldOpen = otherToggle.getAttribute('aria-expanded') !== 'true';
+    otherToggle.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+    otherPanel.hidden = !shouldOpen;
   });
 
   otherLink.href = DEEPLINK;
