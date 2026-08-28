@@ -58,6 +58,17 @@
   .label { color:var(--muted); flex-shrink:0; margin-right:12px; font-size:12px; font-weight:500; text-transform:uppercase; letter-spacing:.3px; padding-top:2px; }
   .value { font-weight:500; text-align:right; max-width:68%; word-break:break-all; line-height:1.4; }
   .value.mono { font-family:'SF Mono','Fira Code',Consolas,monospace; font-size:11.5px; color:#374151; }
+  .detail-copy-row { width:100%; min-height:48px; border:0; border-bottom:1px solid var(--border); background:transparent; color:var(--text); font:inherit; text-align:left; cursor:pointer; transition:background .15s; }
+  .detail-copy-row:hover { background:#f7fbfc; }
+  .detail-copy-row:active { background:#edf8f9; }
+  .detail-copy-row:focus-visible { outline:2px solid var(--teal); outline-offset:2px; border-radius:8px; }
+  .detail-copy-value { display:flex; align-items:center; justify-content:flex-end; gap:8px; min-width:0; max-width:72%; }
+  .detail-copy-value .value { max-width:none; }
+  .detail-copy-icon { width:30px; height:30px; flex:0 0 30px; display:grid; place-items:center; border-radius:8px; background:#f0f3f5; color:#66737a; transition:background .15s,color .15s; }
+  .detail-copy-icon::after { content:'✓'; display:none; font-size:16px; font-weight:800; }
+  .detail-copy-row.copied .detail-copy-icon { background:#e5f8ef; color:#168451; }
+  .detail-copy-row.copied .detail-copy-icon svg { display:none; }
+  .detail-copy-row.copied .detail-copy-icon::after { display:block; }
 
   /* Tabs */
   .tabs { display:flex; margin:0 16px; border-bottom:2px solid var(--border); }
@@ -68,12 +79,6 @@
 
   /* Bank buttons */
   .banks-section { padding:16px 24px 8px; }
-  .icon-lab { margin-bottom:12px; padding:10px; border:1px solid var(--border); border-radius:12px; background:#f8fafb; }
-  .icon-lab-title { margin-bottom:7px; color:var(--muted); font-size:10px; font-weight:700; letter-spacing:.4px; text-transform:uppercase; }
-  .icon-style-picker { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; padding:3px; border-radius:10px; background:#e9eef1; }
-  .icon-style-btn { min-width:0; padding:7px 5px; border:0; border-radius:8px; background:transparent; color:#536069; font:600 10.5px/1.1 inherit; cursor:pointer; transition:background .15s,color .15s,box-shadow .15s; }
-  .icon-style-btn[aria-pressed="true"] { background:#fff; color:var(--teal); box-shadow:0 1px 4px rgba(15,42,52,.16); }
-  .icon-style-hint { margin-top:7px; color:#66737a; font-size:10px; line-height:1.4; }
   .banks-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
   .bank-btn { display:flex; align-items:center; gap:10px; min-width:0; padding:12px 10px; background:var(--card-bg); border:1.5px solid var(--card-border); border-radius:12px; cursor:pointer; text-decoration:none; color:var(--text); font-family:inherit; font-size:12px; font-weight:600; transition:all .15s; }
   .bank-btn:hover { border-color:var(--teal); background:#f0fafb; }
@@ -83,8 +88,6 @@
   .bank-btn .icon-fallback { display:none; position:absolute; inset:0; place-items:center; border-radius:inherit; background:var(--teal); color:#fff; font-size:12px; font-weight:700; }
   .bank-btn .bank-icon.is-fallback .icon-fallback { display:grid; }
   .bank-btn .bank-icon.is-fallback img { display:none; }
-  body[data-icon-style="framed"] .bank-btn .bank-icon { width:40px; height:40px; flex-basis:40px; padding:3px; border:1px solid #dce3e7; border-radius:11px; background:#fff; box-shadow:0 2px 7px rgba(15,42,52,.1); }
-  body[data-icon-style="framed"] .bank-btn .bank-icon img { border-radius:7px; object-fit:contain; }
   body[data-icon-style="circle"] .bank-btn .bank-icon { width:38px; height:38px; flex-basis:38px; border:1px solid #dce3e7; border-radius:50%; background:#fff; box-shadow:0 3px 9px rgba(11,22,51,.1); }
   body[data-icon-style="circle"] .bank-btn .bank-icon img { border-radius:50%; object-fit:cover; }
   .bank-btn .bank-name { min-width:0; line-height:1.2; overflow-wrap:anywhere; }
@@ -259,9 +262,22 @@
   <div class="details">
     <div class="row"><span class="label">Отримувач</span><span class="value">ФОП Сорохан Мар'яна Юріївна</span></div>
     <div class="row"><span class="label">Банк</span><span class="value">АТ КБ "ПРИВАТБАНК"</span></div>
-    <div class="row"><span class="label">IBAN</span><span class="value mono">UA74 3052 9900 0002 6005 0468 02851</span></div>
-    <div class="row"><span class="label">ЄДРПОУ</span><span class="value mono">3162725560</span></div>
-    <div class="row"><span class="label">Призначення</span><span class="value">Оплата замовлення №45678</span></div>
+    <button class="row detail-copy-row" type="button" data-action="copy_iban" aria-label="Скопіювати IBAN">
+      <span class="label">IBAN</span>
+      <span class="detail-copy-value"><span class="value mono">UA74 3052 9900 0002 6005 0468 02851</span><span class="detail-copy-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span></span>
+    </button>
+    <button class="row detail-copy-row" type="button" data-action="copy_edrpou" aria-label="Скопіювати ЄДРПОУ">
+      <span class="label">ЄДРПОУ</span>
+      <span class="detail-copy-value"><span class="value mono">3162725560</span><span class="detail-copy-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span></span>
+    </button>
+    <button class="row detail-copy-row" type="button" data-action="copy_amount" aria-label="Скопіювати суму">
+      <span class="label">Сума</span>
+      <span class="detail-copy-value"><span class="value">456 грн</span><span class="detail-copy-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span></span>
+    </button>
+    <button class="row detail-copy-row" type="button" data-action="copy_purpose" aria-label="Скопіювати призначення платежу">
+      <span class="label">Призначення</span>
+      <span class="detail-copy-value"><span class="value">Оплата замовлення №45678</span><span class="detail-copy-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span></span>
+    </button>
   </div>
 
   <div class="tabs" id="mobileTabs">
@@ -273,15 +289,6 @@
   <!-- TAB 1: Banks (OS-specific) -->
   <div class="tab-content active" id="tab-banks">
     <div class="banks-section">
-      <div class="icon-lab">
-        <div class="icon-lab-title">Оформлення іконок</div>
-        <div class="icon-style-picker" id="iconStylePicker" role="group" aria-label="Оформлення іконок банків">
-          <button class="icon-style-btn" type="button" data-icon-style="native" aria-pressed="true">Android</button>
-          <button class="icon-style-btn" type="button" data-icon-style="framed" aria-pressed="false">У рамці</button>
-          <button class="icon-style-btn" type="button" data-icon-style="circle" aria-pressed="false">Коло</button>
-        </div>
-        <div class="icon-style-hint" id="iconStyleHint">Оригінальний вигляд іконки застосунку — рекомендовано для Android.</div>
-      </div>
       <div class="banks-grid" id="banksGrid">
         <!-- Filled by JS based on OS -->
       </div>
@@ -605,8 +612,8 @@ function getPlatformBanks() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+  document.body.dataset.iconStyle = isIOS ? 'circle' : 'native';
   setupQrImages();
-  setupIconStylePicker();
   setupBanks();
   setupTabs();
   setupFallback();
@@ -615,36 +622,6 @@ document.addEventListener('DOMContentLoaded', function () {
   setupAccordion();
   setupFullscreen();
 });
-
-function setupIconStylePicker() {
-  var picker = document.getElementById('iconStylePicker');
-  var hint = document.getElementById('iconStyleHint');
-  if (!picker || !hint) return;
-
-  var styles = {
-    native: 'Оригінальний вигляд іконки застосунку — рекомендовано для Android.',
-    framed: 'Єдина біла рамка вирівнює іконки з різною формою та фоном.',
-    circle: 'Кругла подача у стилі iOS та IBAN24; може обрізати кутові елементи логотипів.'
-  };
-  var selected = query.get('icons');
-  try { selected = selected || localStorage.getItem('foppay-bank-icon-style'); } catch (error) {}
-  if (!styles[selected]) selected = isIOS ? 'circle' : 'native';
-
-  function applyIconStyle(style) {
-    document.body.dataset.iconStyle = style;
-    hint.textContent = styles[style];
-    picker.querySelectorAll('[data-icon-style]').forEach(function (button) {
-      button.setAttribute('aria-pressed', button.dataset.iconStyle === style ? 'true' : 'false');
-    });
-    try { localStorage.setItem('foppay-bank-icon-style', style); } catch (error) {}
-  }
-
-  picker.addEventListener('click', function (event) {
-    var button = event.target.closest('[data-icon-style]');
-    if (button) applyIconStyle(button.dataset.iconStyle);
-  });
-  applyIconStyle(selected);
-}
 
 function setupQrImages() {
   document.querySelectorAll('[data-qr="payment"]').forEach(function (image) {
@@ -887,9 +864,9 @@ function setupCopyButtons() {
         case 'copy_link': text = DEEPLINK; message = 'Посилання скопійовано'; break;
         case 'copy_iban': text = IBAN; message = 'IBAN скопійовано'; break;
         case 'copy_edrpou': text = EDRPOU; message = 'ЄДРПОУ скопійовано'; break;
-        case 'copy_name': text = RECIPIENT; break;
-        case 'copy_amount': text = AMOUNT; break;
-        case 'copy_purpose': text = PURPOSE; break;
+        case 'copy_name': text = RECIPIENT; message = 'Отримувача скопійовано'; break;
+        case 'copy_amount': text = AMOUNT; message = 'Суму скопійовано'; break;
+        case 'copy_purpose': text = PURPOSE; message = 'Призначення скопійовано'; break;
         case 'copy_all':
           text = 'Отримувач: ' + RECIPIENT + '\nIBAN: ' + IBAN + '\nЄДРПОУ: ' + EDRPOU +
             '\nСума: ' + AMOUNT + '\nПризначення: ' + PURPOSE;
@@ -907,6 +884,10 @@ function setupCopyButtons() {
           button.classList.remove('copied');
           button.textContent = original;
         }, 1500);
+      }
+      if (button.classList.contains('detail-copy-row')) {
+        button.classList.add('copied');
+        setTimeout(function () { button.classList.remove('copied'); }, 1500);
       }
     });
   });
